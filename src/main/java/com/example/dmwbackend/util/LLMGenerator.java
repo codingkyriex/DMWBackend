@@ -1,6 +1,7 @@
 package com.example.dmwbackend.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +20,7 @@ public class LLMGenerator {
     private static final String apiKey = "85fab10ae2f22a18fd6cd4fa05646369.bJQOKq3K6v5QByMX";
     private static final String AUTHORIZATION_HEADER = "Bearer " + apiKey;
     private static final String MODEL_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+
 
     public static Map<String, String> getResponse(String prompt, String model) {
         RestTemplate restTemplate = new RestTemplate();
@@ -59,5 +61,23 @@ public class LLMGenerator {
             errorRes.put("body", e.getMessage());
             return errorRes;
         }
+    }
+
+    public static String convertResponse(Map<String,String> res){
+        String nres;
+        String body = res.get("body");
+        String status = res.get("status");
+        if(!status.equals("200 OK")){
+            nres = "error";
+        }else{
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                JsonNode jsonNode = objectMapper.readTree(body);
+                nres = jsonNode.get("choices").get(0).get("message").get("content").asText();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nres;
     }
 }

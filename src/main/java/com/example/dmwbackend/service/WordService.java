@@ -1,5 +1,8 @@
 package com.example.dmwbackend.service;
 
+import com.example.dmwbackend.config.ResponseResult;
+import org.springframework.web.bind.annotation.RequestParam;
+
 /**
  * @description:
  * @author: eric
@@ -7,4 +10,5 @@ package com.example.dmwbackend.service;
  **/
 
 public interface WordService {
+    ResponseResult<Object> getAiSentence(@RequestParam("id") Integer id);
 }

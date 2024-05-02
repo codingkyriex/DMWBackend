@@ -1,7 +1,9 @@
 package com.example.dmwbackend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.pojo.User;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @description:
@@ -10,5 +12,6 @@ import com.example.dmwbackend.pojo.User;
  **/
 
 public interface UserService extends IService<User> {
-    
+
+
 }
