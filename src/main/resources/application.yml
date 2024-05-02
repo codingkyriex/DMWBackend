@@ -8,9 +8,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://14.29.181.103:3308/esystem?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true  # ????? URL
+    url: jdbc:mysql://localhost:3306/esystem?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true  # ????? URL
     username: root
-    password: 20030416cjh
+    password: 2939568716
     hikari:
       connection-timeout: 30000
   jpa:
