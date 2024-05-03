@@ -49,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public ResponseResult<UserVo> getUserInfo(HttpServletRequest request) {
         //根据token获取用户信息
         String token = request.getHeader("Authorization");
-        Long userId = TokenUtils.getUserIdFromToken(token);
+        Integer userId = TokenUtils.getUserIdFromToken(token);
         User user = userMapper.selectById(userId);
         if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
@@ -64,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public ResponseResult<Object> updateInfo(UserUpdateDto updateDto, HttpServletRequest request) {
         //根据token获取当前用户
         String token = request.getHeader("Authorization");
-        Long userId = TokenUtils.getUserIdFromToken(token);
+        Integer userId = TokenUtils.getUserIdFromToken(token);
         User user = userMapper.selectById(userId);
         if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);

@@ -20,4 +20,6 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     @Select("select * from articles where review_status = 'approved'")
     List<Article> getValidArticle();
+
+
 }

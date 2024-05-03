@@ -54,12 +54,12 @@ public class TokenUtils {
         }
     }
 
-    public static Long getUserIdFromToken(String token) {
+    public static Integer getUserIdFromToken(String token) {
         try {
             // 正确解码Token并获取用户ID
             DecodedJWT decodedJWT = JWT.decode(token);
             // 使用DecodedJWT对象来访问声明
-            return decodedJWT.getClaim("userId").asLong();
+            return decodedJWT.getClaim("userId").asInt();
         } catch (JWTDecodeException exception) {
             // 如果Token格式不正确，返回null
             return null;

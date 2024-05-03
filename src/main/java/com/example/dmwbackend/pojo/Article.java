@@ -36,5 +36,10 @@ public class Article {
     @TableField(value = "summary", fill = FieldFill.INSERT)
     private String summary;
 
+    @TableField(value = "num_of_likes", fill = FieldFill.INSERT)
+    private String numOfLikes;
+
+
+
 
 }

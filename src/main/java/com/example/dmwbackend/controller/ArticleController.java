@@ -2,6 +2,8 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.service.ArticleService;
+import com.example.dmwbackend.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,5 +27,13 @@ public class ArticleController {
     @GetMapping("/detail/{id}")
     public ResponseResult<Object> getDetailArticle(@PathVariable("id") Integer id){
         return articleService.getArticleDetail(id);
+    }
+
+    @GetMapping("/detail/like/{id}")
+    public ResponseResult<Object> likeArticle(@PathVariable("id") Integer id, HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+
+        return articleService.likeArticle(id,userId);
     }
 }

@@ -24,7 +24,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(tokenInterceptor)
                 // 排除不需要拦截的路径
                 .excludePathPatterns("/user/**") // 排除 /login 和 /login开头的所有路径
-                .excludePathPatterns("/article/**")
+                .excludePathPatterns("/article/detail/**")
+                .excludePathPatterns("/article/list")
                 // 可以添加更多的排除路径
                 // .excludePathPatterns("/public/**", "/css/**", "/js/**", "/images/**")
 

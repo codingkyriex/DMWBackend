@@ -15,4 +15,6 @@ import org.springframework.stereotype.Service;
 public interface ArticleService extends IService<Article> {
     ResponseResult<Object> getValidArticles();
     ResponseResult<Object> getArticleDetail(Integer id);
+
+    ResponseResult<Object> likeArticle(Integer id,Integer u);
 }

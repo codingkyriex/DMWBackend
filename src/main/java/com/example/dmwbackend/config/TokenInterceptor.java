@@ -21,6 +21,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         System.out.println(token);
         boolean tokenValid = false;
         tokenValid = TokenUtils.verifyToken(token);
+        System.out.println(TokenUtils.getUserIdFromToken(token));
         if(token==null){
             System.out.println("error: no token");
             return false;
