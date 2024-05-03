@@ -33,4 +33,8 @@ public class Article {
     @TableField(value = "review_status", fill = FieldFill.INSERT)
     private String reviewStatus;
 
+    @TableField(value = "summary", fill = FieldFill.INSERT)
+    private String summary;
+
+
 }
