@@ -28,20 +28,7 @@ import java.util.Map;
 
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
-//"id": 1,
-//        "title": "xxx",
-//        "summary": "xxx",
-//        "picture": [
-//        "url1",
-//        "url2",
-//        ],
-//        "create_time": "xxx"
-//        "author": {
-//        "id": 1,
-//                "name": "xxx",
-//                "avatar": "avatar url"
-//    }
-//},
+
     @Autowired
     ArticleMapper articleMapper;
 
@@ -76,6 +63,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             map.put("author",map1);
             res.add(map);
         }
+        return ResponseResult.okResult(res);
+    }
+
+
+    @Override
+    public ResponseResult<Object> getArticleDetail(Integer id) {
+        Article article = articleMapper.selectById(id);
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("id",article.getArticleId());
+        res.put("title",article.getTitle());
+        res.put("content",article.getContent());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        res.put("create_time",sdf.format(article.getCreateTime()));
+        HashMap<String, Object> map1 = new HashMap<>();
+        User user = userMapper.getUserByArticleId(article.getUserId());
+        map1.put("id",user.getUserId());
+        map1.put("name",user.getUsername());
+        map1.put("avatar",user.getAvatar());
+        res.put("author",map1);
+
         return ResponseResult.okResult(res);
     }
 }

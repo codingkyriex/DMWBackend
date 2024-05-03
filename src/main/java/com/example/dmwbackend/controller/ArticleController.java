@@ -3,9 +3,7 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @description:
@@ -19,8 +17,13 @@ public class ArticleController {
     @Autowired
     ArticleService articleService;
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseResult<Object> getArticleList(){
         return articleService.getValidArticles();
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseResult<Object> getDetailArticle(@PathVariable("id") Integer id){
+        return articleService.getArticleDetail(id);
     }
 }
