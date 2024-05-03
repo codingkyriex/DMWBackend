@@ -4,7 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
 import com.example.dmwbackend.pojo.User;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.example.dmwbackend.vo.UserVo;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @description:
@@ -15,4 +16,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserService extends IService<User> {
     ResponseResult<Object> login(LoginDto dto);
 
+    public ResponseResult<UserVo> getInfo(HttpServletRequest request);
 }

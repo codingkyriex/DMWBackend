@@ -9,8 +9,10 @@ import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.HashUtil;
 import com.example.dmwbackend.util.TokenUtils;
+import com.example.dmwbackend.vo.UserVo;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,18 +28,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     UserMapper userMapper;
+
     @Override
     public ResponseResult<Object> login(LoginDto dto) {
         User user = userMapper.getUserByAccount(dto.getUsername());
-        if(user == null){
+        if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         // 密码不正确
-        if(!HashUtil.getHash(dto.getPassword()).equals(user.getPassword())){
+        if (!HashUtil.getHash(dto.getPassword()).equals(user.getPassword())) {
             return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_PASSWORD_ERROR);
         }
         HashMap<String, String> res = new HashMap<>();
-        res.put("token",TokenUtils.createToken(user.getUserId()));
+        res.put("token", TokenUtils.createToken(user.getUserId()));
         return ResponseResult.okResult(res);
+    }
+
+    @Override
+    public ResponseResult<UserVo> getInfo(HttpServletRequest request) {
+        //根据token获取用户信息
+        String token = request.getHeader("Authorization");
+        Long userId = TokenUtils.getUserIdFromToken(token);
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        } else {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            return ResponseResult.okResult(userVo);
+        }
     }
 }
