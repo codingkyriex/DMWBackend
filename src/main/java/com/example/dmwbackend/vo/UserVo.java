@@ -26,8 +26,6 @@ public class UserVo {
 
     private String username;
 
-    private String account;
-
     private Integer points;
 
     private String avatar;

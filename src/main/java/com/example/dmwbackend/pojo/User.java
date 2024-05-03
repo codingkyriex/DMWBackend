@@ -20,9 +20,6 @@ public class User {
     @TableField(value = "username", fill = FieldFill.INSERT)
     private String username;
 
-    @TableField(value = "account", fill = FieldFill.INSERT)
-    private String account;
-
     @TableField(value = "password", fill = FieldFill.INSERT)
     private String password;
 

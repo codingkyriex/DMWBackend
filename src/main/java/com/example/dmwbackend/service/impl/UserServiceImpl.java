@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
+import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.UserService;
@@ -31,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResponseResult<Object> login(LoginDto dto) {
-        User user = userMapper.getUserByAccount(dto.getUsername());
+        User user = userMapper.getUserByUsername(dto.getUsername());
         if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
@@ -45,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ResponseResult<UserVo> getInfo(HttpServletRequest request) {
+    public ResponseResult<UserVo> getUserInfo(HttpServletRequest request) {
         //根据token获取用户信息
         String token = request.getHeader("Authorization");
         Long userId = TokenUtils.getUserIdFromToken(token);
@@ -58,4 +59,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return ResponseResult.okResult(userVo);
         }
     }
+
+    @Override
+    public ResponseResult<Object> updateInfo(UserUpdateDto updateDto, HttpServletRequest request) {
+        //根据token获取当前用户
+        String token = request.getHeader("Authorization");
+        Long userId = TokenUtils.getUserIdFromToken(token);
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        } else {
+            //根据updateDto更新用户信息
+            user.setUsername(updateDto.getUsername());
+            user.setAvatar(updateDto.getAvatar());
+            userMapper.updateById(user);
+            return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+        }
+    }
+
+
 }

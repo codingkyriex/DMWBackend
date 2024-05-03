@@ -2,6 +2,7 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
+import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,14 +22,20 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("login/")
+    @PostMapping("/login")
     ResponseResult<Object> login(@RequestBody LoginDto dto) {
         return userService.login(dto);
     }
 
-    //根据token获取当前登录用户的信息
-    @GetMapping("getInfo")
-    ResponseResult<UserVo> getInfo(HttpServletRequest request) {
-        return userService.getInfo(request);
+    //获取当前登录用户的信息
+    @GetMapping("/getInfo")
+    ResponseResult<UserVo> getUserInfo(HttpServletRequest request) {
+        return userService.getUserInfo(request);
+    }
+
+    //更新用户信息
+    @PostMapping("/updateInfo")
+    ResponseResult<Object> updateInfo(@RequestBody UserUpdateDto updateDto, HttpServletRequest request) {
+        return userService.updateInfo(updateDto, request);
     }
 }
