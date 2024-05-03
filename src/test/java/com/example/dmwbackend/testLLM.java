@@ -1,6 +1,7 @@
 package com.example.dmwbackend;
 
 import com.example.dmwbackend.util.LLMGenerator;
+import com.example.dmwbackend.util.TokenUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zhipu.oapi.Constants;
 import com.zhipu.oapi.service.v4.model.ChatCompletionRequest;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.dmwbackend.util.HashUtil.getHash;
 import static com.example.dmwbackend.util.TokenGenerator.generateToken;
 
 /**
@@ -24,8 +26,8 @@ import static com.example.dmwbackend.util.TokenGenerator.generateToken;
 public class testLLM {
 
     public static void main(String[] args) {
-        Map<String, String> res = LLMGenerator.getResponse("HELLO", "glm-4");
-        System.out.println(res);
+        System.out.println(TokenUtils.verifyToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTcxNDczNDMyOSwidXNlcklkIjoxfQ.svoDZwtRzvnQkht96BcMSVPSogyMBi7lKI6E2l0ABk0"));;
+
     }
 
 

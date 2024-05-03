@@ -20,4 +20,7 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where user_id = #{id}")
     User getUserByArticleId(@Param("id") Integer id);
+
+    @Select("select * from user where account = #{account}")
+    User getUserByAccount(@Param("account") String account);
 }
