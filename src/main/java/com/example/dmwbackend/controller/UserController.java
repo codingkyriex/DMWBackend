@@ -3,6 +3,7 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
+import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,4 +39,11 @@ public class UserController {
     ResponseResult<Object> updateInfo(@RequestBody UserUpdateDto updateDto, HttpServletRequest request) {
         return userService.updateInfo(updateDto, request);
     }
+
+    //获取用户喜欢的文章
+    @GetMapping("/likes")
+    ResponseResult<Article> getLikeArticles(HttpServletRequest request) {
+        return userService.getLikeArticles(request);
+    }
+
 }

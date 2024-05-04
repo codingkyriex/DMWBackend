@@ -21,33 +21,33 @@ public class ArticleController {
     ArticleService articleService;
 
     @GetMapping("/list")
-    public ResponseResult<Object> getArticleList(){
+    public ResponseResult<Object> getArticleList() {
         return articleService.getValidArticles();
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseResult<Object> getDetailArticle(@PathVariable("id") Integer id){
+    public ResponseResult<Object> getDetailArticle(@PathVariable("id") Integer id) {
         return articleService.getArticleDetail(id);
     }
 
     @GetMapping("/detail/like/{id}")
-    public ResponseResult<Object> likeArticle(@PathVariable("id") Integer id, HttpServletRequest request){
+    public ResponseResult<Object> likeArticle(@PathVariable("id") Integer id, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
 
-        return articleService.likeArticle(id,userId);
+        return articleService.likeArticle(id, userId);
     }
 
-    @PostMapping ("/create")
-    public ResponseResult<Object> createArticle(@RequestBody ArticleCreateDto dto,HttpServletRequest request){
+    @PostMapping("/create")
+    public ResponseResult<Object> createArticle(@RequestBody ArticleCreateDto dto, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
 
-        return articleService.createArticle(dto,userId);
+        return articleService.createArticle(dto, userId);
     }
 
     @GetMapping("/pictures")
-    public ResponseResult<Object> getTopArticleUrls(){
+    public ResponseResult<Object> getTopArticleUrls() {
         return articleService.getBestArticleUrl();
     }
 }

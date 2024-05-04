@@ -5,7 +5,9 @@ import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
+import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.UserMapper;
+import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.HashUtil;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @description:
@@ -29,6 +32,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    ArticleMapper articleMapper;
 
     @Override
     public ResponseResult<Object> login(LoginDto dto) {
@@ -75,6 +81,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userMapper.updateById(user);
             return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
         }
+    }
+
+    @Override
+    public ResponseResult<Article> getLikeArticles(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        //获取用户喜欢的文章id列表
+        List<Integer> articleId = articleMapper.getArticleIdByUserId(userId);
+        //根据文章id列表获取文章列表
+        List<Article> articles = articleMapper.selectBatchIds(articleId);
+        return ResponseResult.okResult(articles);
     }
 
 
