@@ -45,4 +45,9 @@ public class ArticleController {
 
         return articleService.createArticle(dto,userId);
     }
+
+    @GetMapping("/pictures")
+    public ResponseResult<Object> getTopArticleUrls(){
+        return articleService.getBestArticleUrl();
+    }
 }

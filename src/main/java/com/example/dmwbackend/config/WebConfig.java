@@ -26,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/user/**") // 排除 /login 和 /login开头的所有路径
                 .excludePathPatterns("/article/detail/**")
                 .excludePathPatterns("/article/list")
+                .excludePathPatterns("/article/pictures")
                 // 可以添加更多的排除路径
                 // .excludePathPatterns("/public/**", "/css/**", "/js/**", "/images/**")
 

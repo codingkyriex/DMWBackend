@@ -20,4 +20,6 @@ public interface ArticleService extends IService<Article> {
     ResponseResult<Object> likeArticle(Integer id,Integer u);
 
     ResponseResult<Object> createArticle(ArticleCreateDto dto,Integer u);
+
+    ResponseResult<Object> getBestArticleUrl();
 }

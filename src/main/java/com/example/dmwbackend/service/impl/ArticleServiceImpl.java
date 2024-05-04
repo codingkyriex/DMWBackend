@@ -141,4 +141,27 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
+
+    @Override
+    public ResponseResult<Object> getBestArticleUrl() {
+        List<Article> articles = articleMapper.getTopThreeArticlesByLikes();
+        HashMap<String, Object> res = new HashMap<>();
+        ArrayList<String> list = new ArrayList<>();
+        List<ArticleUrl> articleUrls = articleUrlMapper.selectList(null);
+        for(Article article:articles){
+            List<ArticleUrl> articleUrl1 = articleUrlMapper.getArticleUrl(article.getArticleId());
+            ArticleUrl articleUrl;
+            if(articleUrl1.size()==0){
+                Collections.shuffle(articleUrls);
+                articleUrl = articleUrls.get(0);
+            }else {
+                articleUrl = articleUrl1.get(0);
+            }
+            list.add(articleUrl.getUrl());
+        }
+        res.put("url",list);
+        return ResponseResult.okResult(res);
+    }
+
+
 }
