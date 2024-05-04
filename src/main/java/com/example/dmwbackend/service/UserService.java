@@ -3,6 +3,7 @@ package com.example.dmwbackend.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
+import com.example.dmwbackend.dto.RegisterDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
@@ -25,4 +26,6 @@ public interface UserService extends IService<User> {
     ResponseResult<Article> getLikeArticles(HttpServletRequest request);
 
     ResponseResult<Article> getArticles(HttpServletRequest request);
+
+    ResponseResult<Object> register(RegisterDto dto);
 }

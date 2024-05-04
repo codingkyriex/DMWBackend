@@ -2,6 +2,7 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
+import com.example.dmwbackend.dto.RegisterDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.service.UserService;
@@ -23,6 +24,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    //用户注册
+    @PostMapping("/register")
+    ResponseResult<Object> register(@RequestBody RegisterDto dto) {
+        return userService.register(dto);
+    }
+
+    //用户登录
     @PostMapping("/login")
     ResponseResult<Object> login(@RequestBody LoginDto dto) {
         return userService.login(dto);

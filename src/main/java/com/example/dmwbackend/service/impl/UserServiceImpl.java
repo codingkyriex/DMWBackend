@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
+import com.example.dmwbackend.dto.RegisterDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.UserMapper;
@@ -101,6 +102,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //获取用户发表的文章
         List<Article> articles = articleMapper.getArticleByUserId(userId);
         return ResponseResult.okResult(articles);
+    }
+
+    @Override
+    public ResponseResult<Object> register(RegisterDto dto) {
+        //判断用户名是否已存在
+        User user = userMapper.getUserByUsername(dto.getUsername());
+        if (user != null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.DUPLICATE_USER_NAME);
+        }
+        //创建新用户
+        User newUser = new User();
+        newUser.setUsername(dto.getUsername());
+        newUser.setPassword(HashUtil.getHash(dto.getPassword()));
+        userMapper.insert(newUser);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
 
