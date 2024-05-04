@@ -3,6 +3,7 @@ package com.example.dmwbackend.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.ArticleCreateDto;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.ArticleUrlMapper;
 import com.example.dmwbackend.mapper.FavoritesArticleMapper;
@@ -111,6 +112,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         article.setNumOfLikes(article.getNumOfLikes()+1);
         updateById(article);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public ResponseResult<Object> createArticle(ArticleCreateDto dto,Integer u) {
+        if(userMapper.selectById(u)==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        Article article = new Article();
+        article.setUserId(u);
+        article.setContent(dto.getContent());
+        article.setCreateTime(new Date());
+        // 初步测试都为已接收
+        article.setReviewStatus("approved");
+        article.setTitle(dto.getTitle());
+        String strings = dto.getContent().length() > 40
+                ? dto.getContent().substring(0, 40)
+                : dto.getContent();
+        article.setSummary(strings);
+        article.setNumOfLikes(0);
+        articleMapper.insert(article);
+        for(String url : dto.getPictures()){
+            ArticleUrl articleUrl = new ArticleUrl();
+            articleUrl.setArticleId(article.getArticleId());
+            articleUrl.setUrl(url);
+            articleUrlMapper.insert(articleUrl);
+        }
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 }

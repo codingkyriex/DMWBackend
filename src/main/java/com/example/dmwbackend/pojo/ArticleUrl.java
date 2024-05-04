@@ -1,9 +1,6 @@
 package com.example.dmwbackend.pojo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 /**
@@ -12,6 +9,7 @@ import lombok.Data;
  * @time: 2024/5/3 11:08
  */
 @Data
+@TableName(value = "article_urls")
 public class ArticleUrl {
 
     @TableId(value = "url_id", type = IdType.AUTO)

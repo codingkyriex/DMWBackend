@@ -1,6 +1,7 @@
 package com.example.dmwbackend;
 
 import com.example.dmwbackend.util.LLMGenerator;
+import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.TokenUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zhipu.oapi.Constants;
@@ -26,8 +27,8 @@ import static com.example.dmwbackend.util.TokenGenerator.generateToken;
 public class testLLM {
 
     public static void main(String[] args) {
-        System.out.println(TokenUtils.verifyToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImV4cCI6MTcxNDczNDMyOSwidXNlcklkIjoxfQ.svoDZwtRzvnQkht96BcMSVPSogyMBi7lKI6E2l0ABk0"));;
-
+        Map<String, String> test = LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt("purchase"), "glm-4");
+        System.out.println(LLMGenerator.convertResponse(test));
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.ArticleCreateDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.util.TokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,5 +36,13 @@ public class ArticleController {
         Integer userId = TokenUtils.getUserIdFromToken(token);
 
         return articleService.likeArticle(id,userId);
+    }
+
+    @PostMapping ("/create")
+    public ResponseResult<Object> createArticle(@RequestBody ArticleCreateDto dto,HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+
+        return articleService.createArticle(dto,userId);
     }
 }

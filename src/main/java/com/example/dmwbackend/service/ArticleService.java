@@ -2,6 +2,7 @@ package com.example.dmwbackend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.ArticleCreateDto;
 import com.example.dmwbackend.pojo.Article;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface ArticleService extends IService<Article> {
     ResponseResult<Object> getArticleDetail(Integer id);
 
     ResponseResult<Object> likeArticle(Integer id,Integer u);
+
+    ResponseResult<Object> createArticle(ArticleCreateDto dto,Integer u);
 }

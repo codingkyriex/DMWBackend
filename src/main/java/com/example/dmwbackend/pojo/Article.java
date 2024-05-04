@@ -37,7 +37,7 @@ public class Article {
     private String summary;
 
     @TableField(value = "num_of_likes", fill = FieldFill.INSERT)
-    private String numOfLikes;
+    private Integer numOfLikes;
 
 
 

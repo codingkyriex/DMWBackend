@@ -2,9 +2,7 @@ package com.example.dmwbackend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.dmwbackend.pojo.Article;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -20,6 +18,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     @Select("select * from articles where review_status = 'approved'")
     List<Article> getValidArticle();
+
 
 
 }
