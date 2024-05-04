@@ -22,6 +22,11 @@ public interface ArticleMapper extends BaseMapper<Article> {
     @Select("SELECT * FROM articles WHERE review_status = 'approved' ORDER BY num_of_likes DESC LIMIT 3")
     List<Article> getTopThreeArticlesByLikes();
 
+    //根据userId获取用户喜欢的文章
     @Select("SELECT * FROM favorites_article WHERE user_id = #{userId} ")
     List<Integer> getArticleIdByUserId(int userId);
+
+    //根据userId获取用户发表的文章
+    @Select("SELECT * FROM articles WHERE user_id = #{userId} ")
+    List<Article> getArticleByUserId(int userId);
 }

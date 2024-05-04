@@ -23,4 +23,6 @@ public interface UserService extends IService<User> {
     ResponseResult<Object> updateInfo(UserUpdateDto updateDto, HttpServletRequest request);
 
     ResponseResult<Article> getLikeArticles(HttpServletRequest request);
+
+    ResponseResult<Article> getArticles(HttpServletRequest request);
 }

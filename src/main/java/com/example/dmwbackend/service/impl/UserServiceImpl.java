@@ -94,5 +94,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.okResult(articles);
     }
 
+    @Override
+    public ResponseResult<Article> getArticles(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        //获取用户发表的文章
+        List<Article> articles = articleMapper.getArticleByUserId(userId);
+        return ResponseResult.okResult(articles);
+    }
+
 
 }

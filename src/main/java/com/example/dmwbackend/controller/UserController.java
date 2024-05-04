@@ -46,4 +46,10 @@ public class UserController {
         return userService.getLikeArticles(request);
     }
 
+    //获取用户发表的文章
+    @GetMapping("/articles")
+    ResponseResult<Article> getArticles(HttpServletRequest request) {
+        return userService.getArticles(request);
+    }
+
 }
