@@ -1,6 +1,8 @@
 package com.example.dmwbackend.service;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.pojo.Word;
+import com.example.dmwbackend.vo.WordVo;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -13,4 +15,6 @@ public interface WordService {
     ResponseResult<Object> getAiSentence(@RequestParam("id") Integer id);
 
     ResponseResult<Object> getAiTest(Integer u);
+
+    ResponseResult<WordVo> getNextWord(Integer userId);
 }

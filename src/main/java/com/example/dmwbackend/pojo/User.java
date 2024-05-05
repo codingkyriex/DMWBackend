@@ -41,4 +41,7 @@ public class User {
     @TableField(value = "vip_level")
     private Integer vipLevel;
 
+    @TableField(value = "progress")
+    private Integer progress;
+
 }

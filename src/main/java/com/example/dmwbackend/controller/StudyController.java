@@ -1,8 +1,10 @@
 package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.TokenUtils;
+import com.example.dmwbackend.vo.WordVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +34,11 @@ public class StudyController {
         return wordService.getAiTest(userId);
     }
 
-
+    //获取下一个要学习的单词
+    @GetMapping("/next")
+    public ResponseResult<WordVo> getNextWord(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return wordService.getNextWord(userId);
+    }
 }

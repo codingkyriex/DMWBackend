@@ -1,5 +1,6 @@
 package com.example.dmwbackend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
@@ -14,6 +15,7 @@ import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.SortUtil;
+import com.example.dmwbackend.vo.WordVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,17 +47,17 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         Map<String, String> response = LLMGenerator.getResponse(prompt, "glm-4");
         String res = LLMGenerator.convertResponse(response);
         HashMap<String, String> nres = new HashMap<>();
-        if(res.equals("error")){
+        if (res.equals("error")) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
-        nres.put("sentence",res);
+        nres.put("sentence", res);
         return ResponseResult.okResult(nres);
     }
 
     @Override
     public ResponseResult<Object> getAiTest(Integer u) {
         User user = userMapper.selectById(u);
-        if(user==null){
+        if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         List<UserWordProgress> progress = userWordProgressMapper.getProgressById(u);
@@ -72,13 +74,58 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
                     .collect(Collectors.toList());
         }
         UserWordProgress p = SortUtil.selectRandomWithBias(sortedList);
-        Map<String,Object> res = null;
+        Map<String, Object> res = null;
         Word word = wordMapper.selectById(p.getWordId());
         res = getSingleTest(word.getEnglish());
         return ResponseResult.okResult(res);
     }
 
-    private Map<String,Object> getSingleTest(String word){
+    // 获取下一个要学习的单词（当前用户未学习过的单词）
+    @Override
+    public ResponseResult<WordVo> getNextWord(Integer userId) {
+        // 获取该用户还未学过的一个单词
+        Word word = wordMapper.getNextWord(userId);
+        // 如果没有单词了，返回错误信息
+        if (word == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.NO_UNLEARNED_WORD);
+        }
+        // 获取单词的发音
+        String pronunciation = "https://fanyi.baidu.com/gettts?lan=en&text=" + word.getEnglish() + "&spd=3&source=web";
+        // 获取单词的中文翻译
+        String chinese = word.getChinese();
+        String[] choices = new String[4];
+        // 从数据库中随机获取三个错误的选项
+        String[] wrongChoices = wordMapper.getWrongChoices(word.getWordId());
+        // 将正确答案chinese插入到choice数组中随机位置（0或1或2或3）
+        int answer = new Random().nextInt(4);
+        choices[answer] = chinese;
+        // 将错误答案插入到choice数组中
+        for (int i = 0, j = 0; i < 4; i++) {
+            if (choices[i] == null) {
+                choices[i] = wrongChoices[j++];
+            }
+        }
+        // 更新用户学习进度
+        User user = userMapper.selectById(userId);
+        int progress = user.getProgress();
+        progress++;
+        user.setProgress(progress);
+        userMapper.updateById(user);
+
+        // 封装返回的数据为WordVo对象
+        WordVo wordVo = WordVo.builder()
+                .id(word.getWordId())
+                .word(word.getEnglish())
+                .progress(progress)
+                .pronunciation(pronunciation)
+                .choice(choices)
+                .answer(answer)
+                .build();
+
+        return ResponseResult.okResult(wordVo);
+    }
+
+    private Map<String, Object> getSingleTest(String word) {
         String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word), "glm-4"));
         Map<String, Object> dictionary = new HashMap<>();
         ArrayList<String> choices = new ArrayList<>();
