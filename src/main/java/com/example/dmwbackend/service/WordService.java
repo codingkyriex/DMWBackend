@@ -11,4 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface WordService {
     ResponseResult<Object> getAiSentence(@RequestParam("id") Integer id);
+
+    ResponseResult<Object> getAiTest(Integer u);
 }
