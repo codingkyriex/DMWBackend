@@ -38,4 +38,8 @@ public interface WordMapper extends BaseMapper<Word> {
     @Select("SELECT * FROM word WHERE word_id IN (SELECT word_id FROM user_word_progress WHERE user_id = #{userId} AND status = 'forget')")
     List<Integer> getReviewWords(Integer userId);
 
+    //从word表中随机获取一个当前用户未学过的单词
+    @Select("SELECT * FROM word WHERE word_id NOT IN (SELECT word_id FROM user_word_progress WHERE user_id = #{userId}) ORDER BY RAND() LIMIT 1")
+    Word getDailyWord(Integer userId);
+
 }
