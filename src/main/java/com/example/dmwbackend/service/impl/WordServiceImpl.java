@@ -130,6 +130,14 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return ResponseResult.okResult(reviewWords);
     }
 
+    @Override
+    public ResponseResult<Object> getDailySentence(Integer userId) {
+        Word word = wordMapper.getNextWord(userId);
+        //调用AI生成句子
+        ResponseResult<Object> sentence = getAiSentence(word.getWordId());
+        return sentence;
+    }
+
     private Map<String, Object> getSingleTest(String word) {
         String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word), "glm-4"));
         Map<String, Object> dictionary = new HashMap<>();

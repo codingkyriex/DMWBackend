@@ -50,25 +50,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ResponseResult<Object> getValidArticles() {
         List<Article> articles = articleMapper.getValidArticle();
         ArrayList<Map<String, Object>> res = new ArrayList<>();
-        for(Article article:articles){
+        for (Article article : articles) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("id",article.getArticleId());
-            map.put("title",article.getTitle());
-            map.put("summary",article.getSummary());
+            map.put("id", article.getArticleId());
+            map.put("title", article.getTitle());
+            map.put("summary", article.getSummary());
             List<ArticleUrl> articleUrl = articleUrlMapper.getArticleUrl(article.getArticleId());
             ArrayList<String> urls = new ArrayList<>();
-            for(ArticleUrl url : articleUrl){
+            for (ArticleUrl url : articleUrl) {
                 urls.add(url.getUrl());
             }
-            map.put("pictures",urls);
+            map.put("pictures", urls);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            map.put("create_time",sdf.format(article.getCreateTime()));
+            map.put("create_time", sdf.format(article.getCreateTime()));
             User user = userMapper.getUserByArticleId(article.getUserId());
             HashMap<String, Object> map1 = new HashMap<>();
-            map1.put("id",user.getUserId());
-            map1.put("name",user.getUsername());
-            map1.put("avatar",user.getAvatar());
-            map.put("author",map1);
+            map1.put("id", user.getUserId());
+            map1.put("name", user.getUsername());
+            map1.put("avatar", user.getAvatar());
+            map.put("author", map1);
             res.add(map);
         }
         return ResponseResult.okResult(res);
@@ -79,30 +79,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ResponseResult<Object> getArticleDetail(Integer id) {
         Article article = articleMapper.selectById(id);
         HashMap<String, Object> res = new HashMap<>();
-        res.put("id",article.getArticleId());
-        res.put("title",article.getTitle());
-        res.put("content",article.getContent());
+        res.put("id", article.getArticleId());
+        res.put("title", article.getTitle());
+        res.put("content", article.getContent());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        res.put("create_time",sdf.format(article.getCreateTime()));
+        res.put("create_time", sdf.format(article.getCreateTime()));
         HashMap<String, Object> map1 = new HashMap<>();
         User user = userMapper.getUserByArticleId(article.getUserId());
-        map1.put("id",user.getUserId());
-        map1.put("name",user.getUsername());
-        map1.put("avatar",user.getAvatar());
-        res.put("author",map1);
-        if(favoritesArticleMapper.judgeLikeById(user.getUserId())==null){
-            res.put("like",false);
-        }else{
-            res.put("like",true);
+        map1.put("id", user.getUserId());
+        map1.put("name", user.getUsername());
+        map1.put("avatar", user.getAvatar());
+        res.put("author", map1);
+        if (favoritesArticleMapper.judgeLikeById(user.getUserId()) == null) {
+            res.put("like", false);
+        } else {
+            res.put("like", true);
         }
 
         return ResponseResult.okResult(res);
     }
 
     @Override
-    public ResponseResult<Object> likeArticle(Integer id,Integer u) {
+    public ResponseResult<Object> likeArticle(Integer id, Integer u) {
         Article article = articleMapper.selectById(id);
-        if(userMapper.selectById(u)==null){
+        if (userMapper.selectById(u) == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         FavoritesArticle favoritesArticle = new FavoritesArticle();
@@ -110,17 +110,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         favoritesArticle.setUserId(u);
         favoritesArticle.setFavoriteTime(new Date());
         favoritesArticleMapper.insert(favoritesArticle);
-        if(article==null){
+        if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
         }
-        article.setNumOfLikes(article.getNumOfLikes()+1);
+        article.setNumOfLikes(article.getNumOfLikes() + 1);
         updateById(article);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     @Override
-    public ResponseResult<Object> createArticle(ArticleCreateDto dto,Integer u) {
-        if(userMapper.selectById(u)==null){
+    public ResponseResult<Object> createArticle(ArticleCreateDto dto, Integer u) {
+        if (userMapper.selectById(u) == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         Article article = new Article();
@@ -136,7 +136,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setSummary(strings);
         article.setNumOfLikes(0);
         articleMapper.insert(article);
-        for(String url : dto.getPictures()){
+        for (String url : dto.getPictures()) {
             ArticleUrl articleUrl = new ArticleUrl();
             articleUrl.setArticleId(article.getArticleId());
             articleUrl.setUrl(url);
@@ -151,21 +151,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         HashMap<String, Object> res = new HashMap<>();
         ArrayList<String> list = new ArrayList<>();
         List<ArticleUrl> articleUrls = articleUrlMapper.selectList(null);
-        for(Article article:articles){
+        for (Article article : articles) {
             List<ArticleUrl> articleUrl1 = articleUrlMapper.getArticleUrl(article.getArticleId());
             ArticleUrl articleUrl;
-            if(articleUrl1.size()==0){
+            if (articleUrl1.size() == 0) {
                 Collections.shuffle(articleUrls);
                 articleUrl = articleUrls.get(0);
-            }else {
+            } else {
                 articleUrl = articleUrl1.get(0);
             }
             list.add(articleUrl.getUrl());
         }
-        res.put("url",list);
+        res.put("url", list);
         return ResponseResult.okResult(res);
     }
 
+<<<<<<< HEAD
     @Override
     public ResponseResult<Object> searchArticleByTitle(String title){
         try {
@@ -201,4 +202,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
 
+=======
+>>>>>>> master
 }
