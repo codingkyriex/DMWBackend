@@ -23,12 +23,12 @@ public class StudyController {
     WordService wordService;
 
     @GetMapping("/ai/{id}")
-    public ResponseResult<Object> getAiSentence(@PathVariable("id") Integer id){
+    public ResponseResult<Object> getAiSentence(@PathVariable("id") Integer id) {
         return wordService.getAiSentence(id);
     }
 
     @GetMapping("/test")
-    public ResponseResult<Object> getAiTest(HttpServletRequest request){
+    public ResponseResult<Object> getAiTest(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return wordService.getAiTest(userId);
@@ -36,7 +36,7 @@ public class StudyController {
 
     //获取下一个要学习的单词
     @GetMapping("/next")
-    public ResponseResult<WordVo> getNextWord(HttpServletRequest request){
+    public ResponseResult<WordVo> getNextWord(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return wordService.getNextWord(userId);
@@ -44,7 +44,16 @@ public class StudyController {
 
     //获取单词详情
     @GetMapping("/detail/{id}")
-    public ResponseResult<Word> getWordDetail(@PathVariable("id") Integer id){
+    public ResponseResult<Word> getWordDetail(@PathVariable("id") Integer id) {
         return wordService.getWordDetail(id);
     }
+
+    //收藏单词
+    @PostMapping("/like/{id}")
+    public ResponseResult<Object> likeWord(@PathVariable("id") Integer wordId, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return wordService.likeWord(userId, wordId);
+    }
+
 }

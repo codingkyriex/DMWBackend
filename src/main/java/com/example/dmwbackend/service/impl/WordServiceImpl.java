@@ -1,6 +1,5 @@
 package com.example.dmwbackend.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
@@ -10,7 +9,6 @@ import com.example.dmwbackend.mapper.WordMapper;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.pojo.UserWordProgress;
 import com.example.dmwbackend.pojo.Word;
-import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
@@ -132,6 +130,24 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
         return ResponseResult.okResult(word);
+    }
+
+    @Override
+    public ResponseResult<Object> likeWord(Integer userId, Integer wordId) {
+        // 查询用户是否已经收藏过这个单词
+        Integer count = wordMapper.isLiked(userId, wordId);
+        if (count > 0) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.IS_FAVORITED);
+        }
+        // 将单词添加到用户的收藏表favorites_word中
+        // 获取当前的时间
+        Date date = new Date();
+        Integer result = wordMapper.likeWord(userId, wordId, date);
+        if (result > 0) {
+            return ResponseResult.okResult("");
+        }
+
+        return null;
     }
 
     private Map<String, Object> getSingleTest(String word) {

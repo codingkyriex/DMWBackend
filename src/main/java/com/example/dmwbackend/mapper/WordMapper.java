@@ -2,8 +2,11 @@ package com.example.dmwbackend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.dmwbackend.pojo.Word;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.Date;
 
 /**
  * @description:
@@ -21,5 +24,13 @@ public interface WordMapper extends BaseMapper<Word> {
     // 从数据库中随机获取三个错误的选项（不能和原单词的翻译重复）
     @Select("SELECT chinese FROM word WHERE word_id != #{wordId} ORDER BY RAND() LIMIT 3")
     String[] getWrongChoices(Integer wordId);
+
+    // 根据wordId和userId查询favoriites_word表中是否存在该单词
+    @Select("SELECT COUNT(*) FROM favorites_word WHERE user_id = #{userId} AND word_id = #{wordId}")
+    Integer isLiked(Integer userId, Integer wordId);
+
+    // 向favorites_word表中插入一条记录（收藏单词）
+    @Insert("INSERT INTO favorites_word (user_id, word_id, favorite_time) VALUES (#{userId}, #{wordId}, #{date})")
+    Integer likeWord(Integer userId, Integer wordId, Date date);
 
 }

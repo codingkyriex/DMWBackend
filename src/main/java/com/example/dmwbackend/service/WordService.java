@@ -19,4 +19,6 @@ public interface WordService {
     ResponseResult<WordVo> getNextWord(Integer userId);
 
     ResponseResult<Word> getWordDetail(Integer id);
+
+    ResponseResult<Object> likeWord(Integer userId, Integer wordId);
 }
