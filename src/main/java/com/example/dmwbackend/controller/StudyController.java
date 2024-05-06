@@ -41,4 +41,10 @@ public class StudyController {
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return wordService.getNextWord(userId);
     }
+
+    //获取单词详情
+    @GetMapping("/detail/{id}")
+    public ResponseResult<Word> getWordDetail(@PathVariable("id") Integer id){
+        return wordService.getWordDetail(id);
+    }
 }

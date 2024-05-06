@@ -125,6 +125,15 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return ResponseResult.okResult(wordVo);
     }
 
+    @Override
+    public ResponseResult<Word> getWordDetail(Integer id) {
+        Word word = wordMapper.selectById(id);
+        if (word == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        return ResponseResult.okResult(word);
+    }
+
     private Map<String, Object> getSingleTest(String word) {
         String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word), "glm-4"));
         Map<String, Object> dictionary = new HashMap<>();

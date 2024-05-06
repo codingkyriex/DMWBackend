@@ -17,4 +17,6 @@ public interface WordService {
     ResponseResult<Object> getAiTest(Integer u);
 
     ResponseResult<WordVo> getNextWord(Integer userId);
+
+    ResponseResult<Word> getWordDetail(Integer id);
 }
