@@ -1,6 +1,5 @@
 package com.example.dmwbackend.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
@@ -10,7 +9,6 @@ import com.example.dmwbackend.mapper.WordMapper;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.pojo.UserWordProgress;
 import com.example.dmwbackend.pojo.Word;
-import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
@@ -89,40 +87,47 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         if (word == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.NO_UNLEARNED_WORD);
         }
-        // 获取单词的发音
-        String pronunciation = "https://fanyi.baidu.com/gettts?lan=en&text=" + word.getEnglish() + "&spd=3&source=web";
-        // 获取单词的中文翻译
-        String chinese = word.getChinese();
-        String[] choices = new String[4];
-        // 从数据库中随机获取三个错误的选项
-        String[] wrongChoices = wordMapper.getWrongChoices(word.getWordId());
-        // 将正确答案chinese插入到choice数组中随机位置（0或1或2或3）
-        int answer = new Random().nextInt(4);
-        choices[answer] = chinese;
-        // 将错误答案插入到choice数组中
-        for (int i = 0, j = 0; i < 4; i++) {
-            if (choices[i] == null) {
-                choices[i] = wrongChoices[j++];
-            }
-        }
-        // 更新用户学习进度
-        User user = userMapper.selectById(userId);
-        int progress = user.getProgress();
-        progress++;
-        user.setProgress(progress);
-        userMapper.updateById(user);
-
-        // 封装返回的数据为WordVo对象
-        WordVo wordVo = WordVo.builder()
-                .id(word.getWordId())
-                .word(word.getEnglish())
-                .progress(progress)
-                .pronunciation(pronunciation)
-                .choice(choices)
-                .answer(answer)
-                .build();
-
+        // 封装该单词的数据为WordVo对象
+        WordVo wordVo = getWordVo(word.getWordId());
         return ResponseResult.okResult(wordVo);
+    }
+
+    @Override
+    public ResponseResult<Word> getWordDetail(Integer id) {
+        Word word = wordMapper.selectById(id);
+        if (word == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        return ResponseResult.okResult(word);
+    }
+
+    @Override
+    public ResponseResult<Object> likeWord(Integer userId, Integer wordId) {
+        // 查询用户是否已经收藏过这个单词
+        Integer count = wordMapper.isLiked(userId, wordId);
+        if (count > 0) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.IS_FAVORITED);
+        }
+        // 将单词添加到用户的收藏表favorites_word中
+        // 获取当前的时间
+        Date date = new Date();
+        wordMapper.likeWord(userId, wordId, date);
+        return ResponseResult.okResult("");
+
+    }
+
+    // 获取该用户要复习的单词列表
+    @Override
+    public ResponseResult<List<WordVo>> getReviewWords(Integer userId) {
+        // 从user_word_progress表中获取所有学习状态为'forget'的单词
+        List<Integer> reviewList = wordMapper.getReviewWords(userId);
+        //根据reviewList获取单词列表
+        List<WordVo> reviewWords = new ArrayList<>();
+        for (Integer wordId : reviewList) {
+            WordVo wordVo = getWordVo(wordId);
+            reviewWords.add(wordVo);
+        }
+        return ResponseResult.okResult(reviewWords);
     }
 
     private Map<String, Object> getSingleTest(String word) {
@@ -159,6 +164,37 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
             dictionary.put("answer", null); // 如果没有找到答案，设置为null
         }
         return dictionary;
+    }
+
+    //封装WordVo对象
+    private WordVo getWordVo(Integer wordId) {
+        Word word = wordMapper.selectById(wordId);
+        // 获取单词的发音
+        String pronunciation = "https://fanyi.baidu.com/gettts?lan=en&text=" + word.getEnglish() + "&spd=3&source=web";
+        // 获取单词的中文翻译
+        String chinese = word.getChinese();
+        String[] choices = new String[4];
+        // 从数据库中随机获取三个错误的选项
+        String[] wrongChoices = wordMapper.getWrongChoices(word.getWordId());
+        // 将正确答案chinese插入到choice数组中随机位置（0或1或2或3）
+        int answer = new Random().nextInt(4);
+        choices[answer] = chinese;
+        // 将错误答案插入到choice数组中
+        for (int i = 0, j = 0; i < 4; i++) {
+            if (choices[i] == null) {
+                choices[i] = wrongChoices[j++];
+            }
+        }
+        // 封装返回的数据为WordVo对象
+        WordVo wordVo = WordVo.builder()
+                .id(word.getWordId())
+                .word(word.getEnglish())
+                .progress(0)
+                .pronunciation(pronunciation)
+                .choice(choices)
+                .answer(answer)
+                .build();
+        return wordVo;
     }
 
 
