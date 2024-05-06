@@ -1,6 +1,7 @@
 package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.WordVo;
@@ -22,6 +23,9 @@ public class HomeController {
     @Autowired
     WordService wordService;
 
+    @Autowired
+    ArticleService articleService;
+
     //获取每日单词
     @GetMapping("/dailyword")
     public ResponseResult<WordVo> getDailyWord(HttpServletRequest request) {
@@ -37,4 +41,11 @@ public class HomeController {
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return wordService.getDailySentence(userId);
     }
+
+    //获取首页轮播图
+    @GetMapping("/pictures")
+    public ResponseResult<Object> getPicture() {
+        return articleService.getBestArticleUrl();
+    }
+
 }
