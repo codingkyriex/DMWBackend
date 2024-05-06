@@ -29,4 +29,12 @@ public class HomeController {
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return wordService.getNextWord(userId);
     }
+
+    //获取每日一句
+    @GetMapping("/dailysentence")
+    public ResponseResult<Object> getDailySentence(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return wordService.getDailySentence(userId);
+    }
 }

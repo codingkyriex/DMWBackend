@@ -25,4 +25,6 @@ public interface WordService {
     ResponseResult<Object> likeWord(Integer userId, Integer wordId);
 
     ResponseResult<List<WordVo>> getReviewWords(Integer userId);
+
+    ResponseResult<Object> getDailySentence(Integer userId);
 }
