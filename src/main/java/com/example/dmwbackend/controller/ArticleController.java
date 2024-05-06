@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * @description:
  * @author: eric
@@ -49,5 +51,14 @@ public class ArticleController {
     @GetMapping("/pictures")
     public ResponseResult<Object> getTopArticleUrls() {
         return articleService.getBestArticleUrl();
+    }
+
+    @GetMapping("/search/title/{name}")
+    public ResponseResult<Object> searchArticleByName(@PathVariable("name") String name){
+        try {
+            return articleService.searchArticleByTitle(name);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

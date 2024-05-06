@@ -14,9 +14,12 @@ import com.example.dmwbackend.pojo.FavoritesArticle;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.UserService;
+import com.example.dmwbackend.vo.ArticleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -161,6 +164,40 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         res.put("url",list);
         return ResponseResult.okResult(res);
+    }
+
+    @Override
+    public ResponseResult<Object> searchArticleByTitle(String title){
+        try {
+            title = URLDecoder.decode(title, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(title);
+        List<Article> article = articleMapper.getArticleByTitle(title);
+        ArrayList<ArticleVo> articleVos = new ArrayList<>();
+        for(Article a:article){
+            User user = userMapper.selectById(a.getUserId());
+            if(user==null){
+                return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+             articleVos.add(ArticleVo.builder()
+                     .articleId(a.getArticleId())
+                     .title(a.getTitle())
+                     .createTime(sdf.format(a.getCreateTime()))
+                     .summary(a.getSummary())
+                     .numOfLikes(a.getNumOfLikes())
+                     .userName(user.getUsername()).build());
+
+        }
+        return ResponseResult.okResult(articleVos);
+    }
+
+    @Override
+    public ResponseResult<Object> modifyArticle(ArticleCreateDto dto, Integer u) {
+
+        return null;
     }
 
 
