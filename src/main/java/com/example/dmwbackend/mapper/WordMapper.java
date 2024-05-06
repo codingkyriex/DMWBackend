@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description:
@@ -32,5 +33,9 @@ public interface WordMapper extends BaseMapper<Word> {
     // 向favorites_word表中插入一条记录（收藏单词）
     @Insert("INSERT INTO favorites_word (user_id, word_id, favorite_time) VALUES (#{userId}, #{wordId}, #{date})")
     Integer likeWord(Integer userId, Integer wordId, Date date);
+
+    // 从user_word_progress表中获取所有学习状态为'forget'的单词
+    @Select("SELECT * FROM word WHERE word_id IN (SELECT word_id FROM user_word_progress WHERE user_id = #{userId} AND status = 'forget')")
+    List<Integer> getReviewWords(Integer userId);
 
 }

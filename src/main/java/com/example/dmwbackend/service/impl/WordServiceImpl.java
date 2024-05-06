@@ -146,8 +146,46 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         if (result > 0) {
             return ResponseResult.okResult("");
         }
-
         return null;
+    }
+
+    // 获取该用户要复习的单词列表
+    @Override
+    public ResponseResult<List<WordVo>> getReviewWords(Integer userId) {
+        // 从user_word_progress表中获取所有学习状态为'forget'的单词
+        List<Integer> reviewList = wordMapper.getReviewWords(userId);
+        //根据reviewList获取单词列表
+        List<WordVo> reviewWords = new ArrayList<>();
+        for (Integer wordId : reviewList) {
+            Word word = wordMapper.selectById(wordId);
+            // 获取单词的发音
+            String pronunciation = "https://fanyi.baidu.com/gettts?lan=en&text=" + word.getEnglish() + "&spd=3&source=web";
+            // 获取单词的中文翻译
+            String chinese = word.getChinese();
+            String[] choices = new String[4];
+            // 从数据库中随机获取三个错误的选项
+            String[] wrongChoices = wordMapper.getWrongChoices(word.getWordId());
+            // 将正确答案chinese插入到choice数组中随机位置（0或1或2或3）
+            int answer = new Random().nextInt(4);
+            choices[answer] = chinese;
+            // 将错误答案插入到choice数组中
+            for (int i = 0, j = 0; i < 4; i++) {
+                if (choices[i] == null) {
+                    choices[i] = wrongChoices[j++];
+                }
+            }
+            // 封装返回的数据为WordVo对象
+            WordVo wordVo = WordVo.builder()
+                    .id(word.getWordId())
+                    .word(word.getEnglish())
+                    .progress(0)
+                    .pronunciation(pronunciation)
+                    .choice(choices)
+                    .answer(answer)
+                    .build();
+            reviewWords.add(wordVo);
+        }
+        return ResponseResult.okResult(reviewWords);
     }
 
     private Map<String, Object> getSingleTest(String word) {

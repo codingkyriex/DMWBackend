@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: eric
@@ -56,4 +58,11 @@ public class StudyController {
         return wordService.likeWord(userId, wordId);
     }
 
+    //获取复习单词列表
+    @GetMapping("/review")
+    public ResponseResult<List<WordVo>> getReviewWords(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return wordService.getReviewWords(userId);
+    }
 }

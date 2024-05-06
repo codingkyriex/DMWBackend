@@ -5,6 +5,8 @@ import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.vo.WordVo;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: eric
@@ -21,4 +23,6 @@ public interface WordService {
     ResponseResult<Word> getWordDetail(Integer id);
 
     ResponseResult<Object> likeWord(Integer userId, Integer wordId);
+
+    ResponseResult<List<WordVo>> getReviewWords(Integer userId);
 }
