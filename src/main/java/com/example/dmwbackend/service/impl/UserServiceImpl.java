@@ -1,5 +1,6 @@
 package com.example.dmwbackend.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -117,6 +119,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         newUser.setPassword(HashUtil.getHash(dto.getPassword()));
         userMapper.insert(newUser);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public ResponseResult<Object> getUsers(Integer pageNum, Integer pageSize) {
+        Page<User> page = new Page<>(pageNum, pageSize);
+        List<User> records = userMapper.selectPage(page, null).getRecords();
+        return ResponseResult.okResult(records);
     }
 
 

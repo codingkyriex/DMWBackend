@@ -17,5 +17,8 @@ import org.apache.ibatis.annotations.Select;
 public interface FavoritesArticleMapper extends BaseMapper<FavoritesArticle> {
 
     @Select("select * from favorites_article where user_id=#{id}")
-    User judgeLikeById(@Param("id") Integer id);
+    FavoritesArticle judgeLikeById(@Param("id") Integer id);
+
+    @Select("select * from favorites_article where user_id=#{id} and article_id=#{aid}")
+    FavoritesArticle judgeLikeByUserIdAndArticle(@Param("id") Integer id,@Param("aid") Integer aid);
 }

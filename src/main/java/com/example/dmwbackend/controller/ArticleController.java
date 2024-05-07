@@ -2,11 +2,14 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
+import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.util.TokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @description:
@@ -49,5 +52,21 @@ public class ArticleController {
     @GetMapping("/pictures")
     public ResponseResult<Object> getTopArticleUrls() {
         return articleService.getBestArticleUrl();
+    }
+
+    @GetMapping("/search/title/{name}")
+    public ResponseResult<Object> searchArticleByName(@PathVariable("name") String name){
+        try {
+            return articleService.searchArticleByTitle(name);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/modify")
+    public ResponseResult<Object> modifyArticle(@RequestBody ArticleModifyDto dto,HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return articleService.modifyArticle(dto,userId);
     }
 }
