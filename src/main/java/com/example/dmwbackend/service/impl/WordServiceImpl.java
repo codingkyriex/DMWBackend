@@ -87,8 +87,15 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         if (word == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.NO_UNLEARNED_WORD);
         }
+        // 更新用户的学习进度
+        User user = userMapper.selectById(userId);
+        int progress = user.getProgress();
+        progress++;
+        user.setProgress(progress);
+        userMapper.updateById(user);
         // 封装该单词的数据为WordVo对象
         WordVo wordVo = getWordVo(word.getWordId());
+        wordVo.setProgress(progress);
         return ResponseResult.okResult(wordVo);
     }
 
@@ -136,6 +143,19 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         //调用AI生成句子
         ResponseResult<Object> sentence = getAiSentence(word.getWordId());
         return sentence;
+    }
+
+    @Override
+    public ResponseResult<WordVo> getDailyWord(Integer userId) {
+        // 获取该用户还未学过的一个单词
+        Word word = wordMapper.getNextWord(userId);
+        // 如果没有单词了，返回错误信息
+        if (word == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.NO_UNLEARNED_WORD);
+        }
+        // 封装该单词的数据为WordVo对象
+        WordVo wordVo = getWordVo(word.getWordId());
+        return ResponseResult.okResult(wordVo);
     }
 
     private Map<String, Object> getSingleTest(String word) {
