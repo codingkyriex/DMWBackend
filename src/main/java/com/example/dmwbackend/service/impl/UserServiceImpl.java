@@ -7,6 +7,7 @@ import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
 import com.example.dmwbackend.dto.RegisterDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
+import com.example.dmwbackend.dto.UserVipDto;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.pojo.Article;
@@ -126,6 +127,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Page<User> page = new Page<>(pageNum, pageSize);
         List<User> records = userMapper.selectPage(page, null).getRecords();
         return ResponseResult.okResult(records);
+    }
+
+    @Override
+    public ResponseResult<Object> modifyUserVIP(UserVipDto dto) {
+        User user1 = userMapper.selectById(dto.getUser());
+        if(user1==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        user1.setVipStatus(dto.getVip()==0?"non_vip":"vip");
+        user1.setVipLevel(dto.getVipLevel());
+        userMapper.updateById(user1);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
 

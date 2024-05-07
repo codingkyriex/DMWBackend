@@ -3,6 +3,7 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
 import com.example.dmwbackend.dto.ArticleModifyDto;
+import com.example.dmwbackend.dto.ImageUrlDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.util.TokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,5 +69,10 @@ public class ArticleController {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         return articleService.modifyArticle(dto,userId);
+    }
+
+    @PostMapping("/upload")
+    public ResponseResult<Object> uploadImage(@RequestBody ImageUrlDto dto){
+        return articleService.uploadImage(dto.getData());
     }
 }

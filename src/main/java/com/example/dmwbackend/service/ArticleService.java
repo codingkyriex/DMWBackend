@@ -32,4 +32,8 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult<Object> modifyArticle(ArticleModifyDto dto,Integer userId);
 
+    ResponseResult<Object> uploadImage(String base);
+
+    ResponseResult<Object> getPagedArticles(Integer pageNum,Integer pageSize);
+
 }

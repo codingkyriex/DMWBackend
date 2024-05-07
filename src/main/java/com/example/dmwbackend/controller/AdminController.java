@@ -2,6 +2,7 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleModifyDto;
+import com.example.dmwbackend.dto.UserVipDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.TokenUtils;
@@ -50,4 +51,13 @@ public class AdminController {
         return userService.getUsers(pageNum,pageSize);
     }
 
+    @PostMapping("/modifyUser")
+    public ResponseResult<Object> modifyUser(@RequestBody UserVipDto dto){
+        return userService.modifyUserVIP(dto);
+    }
+
+    @GetMapping("/getAllArticle")
+    public  ResponseResult<Object> getPagedArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+        return articleService.getPagedArticles(pageNum, pageSize);
+    }
 }

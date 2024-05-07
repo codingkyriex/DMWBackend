@@ -1,5 +1,6 @@
 package com.example.dmwbackend.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
@@ -19,6 +20,9 @@ import com.example.dmwbackend.vo.ArticleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
@@ -107,7 +111,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         FavoritesArticle like = favoritesArticleMapper.judgeLikeByUserIdAndArticle(id, u);
-        if(like==null){
+        if (like == null) {
             FavoritesArticle favoritesArticle = new FavoritesArticle();
             favoritesArticle.setArticleId(article.getArticleId());
             favoritesArticle.setUserId(u);
@@ -172,7 +176,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
 
     @Override
-    public ResponseResult<Object> searchArticleByTitle(String title){
+    public ResponseResult<Object> searchArticleByTitle(String title) {
         try {
             title = URLDecoder.decode(title, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -181,19 +185,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         System.out.println(title);
         List<Article> article = articleMapper.getArticleByTitle(title);
         ArrayList<ArticleVo> articleVos = new ArrayList<>();
-        for(Article a:article){
+        for (Article a : article) {
             User user = userMapper.selectById(a.getUserId());
-            if(user==null){
+            if (user == null) {
                 return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-             articleVos.add(ArticleVo.builder()
-                     .articleId(a.getArticleId())
-                     .title(a.getTitle())
-                     .createTime(sdf.format(a.getCreateTime()))
-                     .summary(a.getSummary())
-                     .numOfLikes(a.getNumOfLikes())
-                     .userName(user.getUsername()).build());
+            articleVos.add(ArticleVo.builder()
+                    .articleId(a.getArticleId())
+                    .title(a.getTitle())
+                    .createTime(sdf.format(a.getCreateTime()))
+                    .summary(a.getSummary())
+                    .numOfLikes(a.getNumOfLikes())
+                    .userName(user.getUsername()).build());
 
         }
         return ResponseResult.okResult(articleVos);
@@ -202,7 +206,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult<Object> modifyArticle(ArticleModifyDto dto) {
         Article article = articleMapper.selectById(dto.getId());
-        if(article==null){
+        if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
         }
         article.setContent(dto.getContent());
@@ -217,8 +221,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer userId) {
-        Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(),userId);
-        if(article==null){
+        Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(), userId);
+        if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
         }
         article.setContent(dto.getContent());
@@ -231,5 +235,62 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
+    @Override
+    public ResponseResult<Object> uploadImage(String base64String) {
+        try {
+            // 解码base64字符串
+            byte[] imageBytes = Base64.getDecoder().decode(base64String.split(",")[1]);
+            // 创建图片存储目录
+            File imagesDir = new File("/home/ubuntu/swe/images");
+            if (!imagesDir.exists()) {
+                imagesDir.mkdirs();
+            }
 
+            // 创建图片文件
+            String imageFileName = "image_" + System.currentTimeMillis() + ".png";
+            File imageFile = new File(imagesDir, imageFileName);
+            try (FileOutputStream out = new FileOutputStream(imageFile)) {
+                out.write(imageBytes);
+            }
+
+            // 构建图片URL
+            String imageUrl = "http://49.233.255.219" + "/images/" + imageFileName;
+            HashMap<String, String> res = new HashMap<>();
+            res.put("url",imageUrl);
+            return ResponseResult.okResult(res);
+        } catch (IOException e) {
+            // 返回错误响应
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+    }
+
+    @Override
+    public ResponseResult<Object> getPagedArticles(Integer pageNum, Integer pageSize) {
+        Page<Article> page = new Page<>(pageNum, pageSize);
+        List<Article> records = articleMapper.selectPage(page, null).getRecords();
+        ArrayList<Map<String, Object>> res = new ArrayList<>();
+        for (Article article : records) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("id", article.getArticleId());
+            map.put("title", article.getTitle());
+            map.put("summary", article.getSummary());
+            List<ArticleUrl> articleUrl = articleUrlMapper.getArticleUrl(article.getArticleId());
+            ArrayList<String> urls = new ArrayList<>();
+            for (ArticleUrl url : articleUrl) {
+                urls.add(url.getUrl());
+            }
+            map.put("pictures", urls);
+            map.put("status",article.getReviewStatus());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            map.put("create_time", sdf.format(article.getCreateTime()));
+            User user = userMapper.getUserByArticleId(article.getUserId());
+            HashMap<String, Object> map1 = new HashMap<>();
+            map1.put("id", user.getUserId());
+            map1.put("name", user.getUsername());
+            map1.put("avatar", user.getAvatar());
+            map.put("author", map1);
+            res.add(map);
+        }
+        return ResponseResult.okResult(res);
+    }
 }
