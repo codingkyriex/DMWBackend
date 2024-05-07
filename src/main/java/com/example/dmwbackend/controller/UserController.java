@@ -60,4 +60,10 @@ public class UserController {
         return userService.getArticles(request);
     }
 
+    //获取用户当前的学习进度
+    @GetMapping("/progress")
+    ResponseResult<Object> getProgress(HttpServletRequest request) {
+        return userService.getProgress(request);
+    }
+
 }

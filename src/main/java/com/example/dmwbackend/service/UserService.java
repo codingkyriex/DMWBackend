@@ -33,4 +33,6 @@ public interface UserService extends IService<User> {
     ResponseResult<Object> getUsers(Integer pageNum, Integer pageSize);
 
     ResponseResult<Object> modifyUserVIP(UserVipDto dto);
+
+    ResponseResult<Object> getProgress(HttpServletRequest request);
 }

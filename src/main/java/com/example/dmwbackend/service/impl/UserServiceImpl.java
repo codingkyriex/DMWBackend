@@ -132,14 +132,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public ResponseResult<Object> modifyUserVIP(UserVipDto dto) {
         User user1 = userMapper.selectById(dto.getUser());
-        if(user1==null){
+        if (user1 == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
-        user1.setVipStatus(dto.getVip()==0?"non_vip":"vip");
+        user1.setVipStatus(dto.getVip() == 0 ? "non_vip" : "vip");
         user1.setVipLevel(dto.getVipLevel());
         userMapper.updateById(user1);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
+    @Override
+    public ResponseResult<Object> getProgress(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        Integer progress = user.getProgress();
+        return ResponseResult.okResult(progress);
+    }
 
 }
