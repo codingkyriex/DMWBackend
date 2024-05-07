@@ -15,6 +15,9 @@ import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.HashUtil;
 import com.example.dmwbackend.util.TokenUtils;
+import com.example.dmwbackend.vo.ArticleVo;
+import com.example.dmwbackend.vo.AuthorVo;
+import com.example.dmwbackend.vo.LikeArticleVo;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
@@ -92,10 +95,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         //获取用户喜欢的文章id列表
-        List<Integer> articleId = articleMapper.getArticleIdByUserId(userId);
+        List<Integer> articleId = articleMapper.getLikeArticle(userId);
         //根据文章id列表获取文章列表
         List<Article> articles = articleMapper.selectBatchIds(articleId);
-        return ResponseResult.okResult(articles);
+        List<LikeArticleVo> res = new ArrayList<>();
+        //获取文章的作者
+        for (Article article : articles) {
+            //将文章封装为LikeArticleVo
+            LikeArticleVo articleVo = new LikeArticleVo();
+            //将article的属性拷贝到articleVo
+            BeanUtils.copyProperties(article, articleVo);
+            User user = userMapper.selectById(article.getUserId());
+            AuthorVo author = new AuthorVo();
+            //获取文章作者的id，名字和头像信息
+            author.setUserId(user.getUserId());
+            author.setUsername(user.getUsername());
+            author.setAvatar(user.getAvatar());
+            articleVo.setAuthor(author);
+            String[] pictures = articleMapper.getPictureByArticleId(article.getArticleId());
+            articleVo.setPictures(pictures);
+            //处理时间格式为yyyy-MM-dd
+            String createTime = article.getCreateTime().toString();
+            articleVo.setCreateTime(createTime);
+            res.add(articleVo);
+        }
+        return ResponseResult.okResult(res);
     }
 
     @Override

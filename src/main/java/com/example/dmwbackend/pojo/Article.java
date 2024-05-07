@@ -1,6 +1,9 @@
 package com.example.dmwbackend.pojo;
+
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -13,6 +16,7 @@ import java.util.Date;
 
 @Data
 @TableName(value = "articles")
+@JsonFormat(pattern = "yyyy-MM-dd”, timezone = “GMT+8")
 public class Article {
 
     @TableId(value = "article_id", type = IdType.AUTO)
@@ -38,8 +42,6 @@ public class Article {
 
     @TableField(value = "num_of_likes", fill = FieldFill.INSERT)
     private Integer numOfLikes;
-
-
 
 
 }
