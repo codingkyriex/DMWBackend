@@ -10,6 +10,8 @@ import lombok.Data;
 
 @Data
 public class ArticleModifyDto {
+
+    String id;
     String title;
     String content;
 }

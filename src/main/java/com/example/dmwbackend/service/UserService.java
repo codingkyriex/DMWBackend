@@ -28,4 +28,6 @@ public interface UserService extends IService<User> {
     ResponseResult<Article> getArticles(HttpServletRequest request);
 
     ResponseResult<Object> register(RegisterDto dto);
+
+    ResponseResult<Object> getUsers(Integer pageNum, Integer pageSize);
 }

@@ -28,5 +28,8 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult<Object> searchArticleByTitle(String title) throws UnsupportedEncodingException;
 
-    ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer u);
+    ResponseResult<Object> modifyArticle(ArticleModifyDto dto);
+
+    ResponseResult<Object> modifyArticle(ArticleModifyDto dto,Integer userId);
+
 }

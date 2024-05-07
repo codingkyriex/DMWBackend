@@ -106,11 +106,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if (userMapper.selectById(u) == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
-        FavoritesArticle favoritesArticle = new FavoritesArticle();
-        favoritesArticle.setArticleId(article.getArticleId());
-        favoritesArticle.setUserId(u);
-        favoritesArticle.setFavoriteTime(new Date());
-        favoritesArticleMapper.insert(favoritesArticle);
+        FavoritesArticle like = favoritesArticleMapper.judgeLikeByUserIdAndArticle(id, u);
+        if(like==null){
+            FavoritesArticle favoritesArticle = new FavoritesArticle();
+            favoritesArticle.setArticleId(article.getArticleId());
+            favoritesArticle.setUserId(u);
+            favoritesArticle.setFavoriteTime(new Date());
+            favoritesArticleMapper.insert(favoritesArticle);
+        }
         if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
         }
@@ -197,8 +200,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer u) {
-        Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(), u);
+    public ResponseResult<Object> modifyArticle(ArticleModifyDto dto) {
+        Article article = articleMapper.selectById(dto.getId());
+        if(article==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
         article.setContent(dto.getContent());
         article.setTitle(dto.getTitle());
         String strings = dto.getContent().length() > 40
@@ -209,6 +215,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
+    @Override
+    public ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer userId) {
+        Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(),userId);
+        if(article==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
+        article.setContent(dto.getContent());
+        article.setTitle(dto.getTitle());
+        String strings = dto.getContent().length() > 40
+                ? dto.getContent().substring(0, 40)
+                : dto.getContent();
+        article.setSummary(strings);
+        articleMapper.updateById(article);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
 
 
 }
