@@ -27,6 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/article/detail/**")
                 .excludePathPatterns("/article/list")
                 .excludePathPatterns("/article/pictures")
+                .excludePathPatterns("/admin/**")
                 // 可以添加更多的排除路径
                 // .excludePathPatterns("/public/**", "/css/**", "/js/**", "/images/**")
 

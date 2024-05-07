@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
+import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.ArticleUrlMapper;
 import com.example.dmwbackend.mapper.FavoritesArticleMapper;
@@ -166,7 +167,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(res);
     }
 
-<<<<<<< HEAD
+
     @Override
     public ResponseResult<Object> searchArticleByTitle(String title){
         try {
@@ -196,12 +197,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public ResponseResult<Object> modifyArticle(ArticleCreateDto dto, Integer u) {
-
-        return null;
+    public ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer u) {
+        Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(), u);
+        article.setContent(dto.getContent());
+        article.setTitle(dto.getTitle());
+        String strings = dto.getContent().length() > 40
+                ? dto.getContent().substring(0, 40)
+                : dto.getContent();
+        article.setSummary(strings);
+        articleMapper.updateById(article);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
 
-=======
->>>>>>> master
+
 }

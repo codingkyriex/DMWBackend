@@ -2,6 +2,7 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
+import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.util.TokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,5 +61,12 @@ public class ArticleController {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping("/modify")
+    public ResponseResult<Object> modifyArticle(@RequestBody ArticleModifyDto dto,HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        return articleService.modifyArticle(dto,userId);
     }
 }

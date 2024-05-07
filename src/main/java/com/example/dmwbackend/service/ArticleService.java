@@ -3,6 +3,7 @@ package com.example.dmwbackend.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
+import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.pojo.Article;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,5 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult<Object> searchArticleByTitle(String title) throws UnsupportedEncodingException;
 
-    ResponseResult<Object> modifyArticle(ArticleCreateDto dto,Integer u);
+    ResponseResult<Object> modifyArticle(ArticleModifyDto dto, Integer u);
 }

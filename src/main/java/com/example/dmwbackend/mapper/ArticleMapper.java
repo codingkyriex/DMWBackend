@@ -32,4 +32,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     @Select("SELECT * FROM articles WHERE title LIKE CONCAT('%', #{title}, '%')")
     List<Article> getArticleByTitle(@Param("title") String title);
+
+    @Select("SELECT * FROM articles WHERE title LIKE CONCAT('%', #{title}, '%') and user_id = #{userId}")
+    Article getArticleByTitleAndUser(@Param("title") String title,@Param("id") int userId);
 }
