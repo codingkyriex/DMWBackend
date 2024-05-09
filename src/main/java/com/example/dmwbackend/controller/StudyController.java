@@ -1,5 +1,6 @@
 package com.example.dmwbackend.controller;
 
+import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.service.WordService;
@@ -33,6 +34,10 @@ public class StudyController {
     public ResponseResult<Object> getAiTest(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
         return wordService.getAiTest(userId);
     }
 
@@ -41,6 +46,10 @@ public class StudyController {
     public ResponseResult<WordVo> getNextWord(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
         return wordService.getNextWord(userId);
     }
 
@@ -55,6 +64,10 @@ public class StudyController {
     public ResponseResult<Object> likeWord(@PathVariable("id") Integer wordId, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
         return wordService.likeWord(userId, wordId);
     }
 
@@ -63,6 +76,10 @@ public class StudyController {
     public ResponseResult<List<WordVo>> getReviewWords(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
         return wordService.getReviewWords(userId);
     }
 }

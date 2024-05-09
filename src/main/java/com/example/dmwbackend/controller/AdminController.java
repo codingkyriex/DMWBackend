@@ -60,4 +60,14 @@ public class AdminController {
     public  ResponseResult<Object> getPagedArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
         return articleService.getPagedArticles(pageNum, pageSize);
     }
+
+    @GetMapping("/getPendingArticle")
+    public  ResponseResult<Object> getPedingArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+        return articleService.getPendingArticles(pageNum,pageSize);
+    }
+
+    @GetMapping("/reviewArticle/{id}/{status}")
+    public ResponseResult<Object> reviewArticle(@PathVariable("id")Integer id,@PathVariable("status") Integer status){
+        return articleService.reviewArticle(id,status);
+    }
 }

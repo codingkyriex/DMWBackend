@@ -31,6 +31,7 @@ public class HomeController {
     public ResponseResult<WordVo> getDailyWord(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+
         return wordService.getDailyWord(userId);
     }
 

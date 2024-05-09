@@ -19,6 +19,9 @@ public interface ArticleMapper extends BaseMapper<Article> {
     @Select("select * from articles where review_status = 'approved'")
     List<Article> getValidArticle();
 
+    @Select("select * from articles where review_status = 'rejected' and user_id = #{userId}")
+    List<Article> getRejectedArticle(int userId);
+
     @Select("SELECT * FROM articles WHERE review_status = 'approved' ORDER BY num_of_likes DESC LIMIT 3")
     List<Article> getTopThreeArticlesByLikes();
 

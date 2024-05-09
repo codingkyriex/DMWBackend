@@ -1,5 +1,6 @@
 package com.example.dmwbackend.config;
 
+
 import com.example.dmwbackend.util.TokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,13 +23,16 @@ public class TokenInterceptor implements HandlerInterceptor {
         boolean tokenValid = false;
         tokenValid = TokenUtils.verifyToken(token);
         System.out.println(TokenUtils.getUserIdFromToken(token));
+
         if(token==null){
             System.out.println("error: no token");
+            request.setAttribute("tokenError", "Token is missing.");
             return false;
         }
         // 如果Token无效或缺失
         if (!tokenValid) {
             System.out.println("error: no valid token");
+            request.setAttribute("tokenError", "no valid token.");
             return false;
         }
 

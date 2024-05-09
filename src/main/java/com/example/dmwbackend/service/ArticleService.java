@@ -36,4 +36,10 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult<Object> getPagedArticles(Integer pageNum,Integer pageSize);
 
+    ResponseResult<Object> getPendingArticles(Integer pageNum,Integer pageSize);
+
+    ResponseResult<Object> reviewArticle(Integer id,Integer status);
+
+
+
 }

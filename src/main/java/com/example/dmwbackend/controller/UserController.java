@@ -1,11 +1,13 @@
 package com.example.dmwbackend.controller;
 
+import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.LoginDto;
 import com.example.dmwbackend.dto.RegisterDto;
 import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.service.UserService;
+import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,17 @@ public class UserController {
     @GetMapping("/articles")
     ResponseResult<Article> getArticles(HttpServletRequest request) {
         return userService.getArticles(request);
+    }
+
+    @GetMapping("/reject")
+    ResponseResult<Object> getRejectedArticles(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
+        return userService.getRejectedArticles(userId);
     }
 
 }

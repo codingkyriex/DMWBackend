@@ -1,5 +1,6 @@
 package com.example.dmwbackend.controller;
 
+import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleCreateDto;
 import com.example.dmwbackend.dto.ArticleModifyDto;
@@ -38,6 +39,10 @@ public class ArticleController {
     public ResponseResult<Object> likeArticle(@PathVariable("id") Integer id, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
 
         return articleService.likeArticle(id, userId);
     }
@@ -46,6 +51,10 @@ public class ArticleController {
     public ResponseResult<Object> createArticle(@RequestBody ArticleCreateDto dto, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
 
         return articleService.createArticle(dto, userId);
     }
@@ -68,6 +77,10 @@ public class ArticleController {
     public ResponseResult<Object> modifyArticle(@RequestBody ArticleModifyDto dto,HttpServletRequest request){
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
         return articleService.modifyArticle(dto,userId);
     }
 

@@ -1,5 +1,6 @@
 package com.example.dmwbackend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
@@ -95,7 +96,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         map1.put("name", user.getUsername());
         map1.put("avatar", user.getAvatar());
         res.put("author", map1);
-        if (favoritesArticleMapper.judgeLikeById(user.getUserId()) == null) {
+        if (favoritesArticleMapper.judgeLikeByUserIdAndArticle(id,user.getUserId()) == null) {
             res.put("like", false);
         } else {
             res.put("like", true);
@@ -136,7 +137,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setContent(dto.getContent());
         article.setCreateTime(new Date());
         // 初步测试都为已接收
-        article.setReviewStatus("approved");
+        article.setReviewStatus("pending");
         article.setTitle(dto.getTitle());
         String strings = dto.getContent().length() > 40
                 ? dto.getContent().substring(0, 40)
@@ -293,4 +294,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         return ResponseResult.okResult(res);
     }
+
+    @Override
+    public ResponseResult<Object> getPendingArticles(Integer pageNum,Integer pageSize) {
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("review_status", "pending"); // 假设"status"是您表中状态的字段名
+        Page<Article> page = new Page<>(pageNum, pageSize);
+        List<Article> records = articleMapper.selectPage(page, queryWrapper).getRecords();
+        return ResponseResult.okResult(records);
+    }
+
+    @Override
+    public ResponseResult<Object> reviewArticle(Integer id, Integer status) {
+        Article article = articleMapper.selectById(id);
+        if(article==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
+        article.setReviewStatus(status==0?"rejected":"approved");
+        updateById(article);
+        return ResponseResult.okResult(article.getArticleId());
+    }
+
+
 }

@@ -24,8 +24,8 @@ public class TokenUtils {
     public static String createToken(Integer userId) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
 
-        // 设置Token的过期时间 // 1小时后过期
-        Date expireDate = new Date(System.currentTimeMillis() + 3600 * 1000);
+        // 设置Token的过期时间 // 10小时后过期
+        Date expireDate = new Date(System.currentTimeMillis() + 3600 * 10000);
 
         // 创建Token载荷
         Map<String, Object> claims = new HashMap<>();

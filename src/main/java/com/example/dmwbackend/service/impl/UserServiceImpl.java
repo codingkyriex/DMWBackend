@@ -141,5 +141,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
+    @Override
+    public ResponseResult<Object> getRejectedArticles(Integer id) {
+        User user = userMapper.selectById(id);
+        if(user==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        List<Article> articles = articleMapper.getRejectedArticle(id);
+        return ResponseResult.okResult(articles);
+    }
+
 
 }
