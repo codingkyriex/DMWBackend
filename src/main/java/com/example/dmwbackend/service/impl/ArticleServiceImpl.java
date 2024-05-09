@@ -126,8 +126,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public ResponseResult<Object> createArticle(ArticleCreateDto dto, Integer u) {
-        if (userMapper.selectById(u) == null) {
+        User user = userMapper.selectById(u);
+        if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        if("read".equals(user.getState())){
+            return ResponseResult.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
         }
         Article article = new Article();
         article.setUserId(u);
@@ -222,6 +226,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Article article = articleMapper.getArticleByTitleAndUser(dto.getTitle(), userId);
         if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
+        User user = userMapper.selectById(userId);
+        if("read".equals(user.getState())){
+            return ResponseResult.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
         }
         article.setContent(dto.getContent());
         article.setTitle(dto.getTitle());

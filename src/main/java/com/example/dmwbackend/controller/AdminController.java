@@ -70,4 +70,9 @@ public class AdminController {
     public ResponseResult<Object> reviewArticle(@PathVariable("id")Integer id,@PathVariable("status") Integer status){
         return articleService.reviewArticle(id,status);
     }
+
+    @GetMapping("/ban/{id}/{status}")
+    public ResponseResult<Object> banUser(@PathVariable("id")Integer id,@PathVariable("status") Integer status){
+        return userService.changeUserState(id,status);
+    }
 }

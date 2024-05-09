@@ -39,4 +39,6 @@ public interface UserService extends IService<User> {
 
     ResponseResult<Object> getProgress(HttpServletRequest request);
 
+    ResponseResult<Object> changeUserState(Integer user,Integer state);
+
 }

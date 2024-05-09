@@ -187,4 +187,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.okResult(progress);
     }
 
+    @Override
+    public ResponseResult<Object> changeUserState(Integer user,Integer state) {
+        User user1 = userMapper.selectById(user);
+        if(user1==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        user1.setState(state==0 ?"read":"readAndWrite");
+        updateById(user1);
+        return ResponseResult.okResult(null);
+    }
+
 }

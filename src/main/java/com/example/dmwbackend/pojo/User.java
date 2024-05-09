@@ -44,4 +44,7 @@ public class User {
     @TableField(value = "progress")
     private Integer progress;
 
+    @TableField(value = "state")
+    private String state;
+
 }
