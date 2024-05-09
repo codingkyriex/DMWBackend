@@ -3,9 +3,7 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.WordService;
-import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.WordVo;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,19 +26,15 @@ public class HomeController {
 
     //获取每日单词
     @GetMapping("/dailyword")
-    public ResponseResult<WordVo> getDailyWord(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        Integer userId = TokenUtils.getUserIdFromToken(token);
+    public ResponseResult<WordVo> getDailyWord() {
+        return wordService.getDailyWord();
 
-        return wordService.getDailyWord(userId);
     }
 
     //获取每日一句
     @GetMapping("/dailysentence")
-    public ResponseResult<Object> getDailySentence(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        Integer userId = TokenUtils.getUserIdFromToken(token);
-        return wordService.getDailySentence(userId);
+    public ResponseResult<Object> getDailySentence() {
+        return wordService.getDailySentence();
     }
 
     //获取首页轮播图

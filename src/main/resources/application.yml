@@ -13,6 +13,9 @@ spring:
     password: 2939568716
     hikari:
       connection-timeout: 30000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   jpa:
     hibernate:
       ddl-auto: update         # ??????????
@@ -29,3 +32,4 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+

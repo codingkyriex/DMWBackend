@@ -16,7 +16,6 @@ import com.example.dmwbackend.pojo.ArticleUrl;
 import com.example.dmwbackend.pojo.FavoritesArticle;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.ArticleService;
-import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.vo.ArticleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -257,7 +254,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             // 构建图片URL
             String imageUrl = "http://49.233.255.219" + "/images/" + imageFileName;
             HashMap<String, String> res = new HashMap<>();
-            res.put("url",imageUrl);
+            res.put("url", imageUrl);
             return ResponseResult.okResult(res);
         } catch (IOException e) {
             // 返回错误响应
@@ -281,7 +278,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 urls.add(url.getUrl());
             }
             map.put("pictures", urls);
-            map.put("status",article.getReviewStatus());
+            map.put("status", article.getReviewStatus());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             map.put("create_time", sdf.format(article.getCreateTime()));
             User user = userMapper.getUserByArticleId(article.getUserId());

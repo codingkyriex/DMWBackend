@@ -138,21 +138,17 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     }
 
     @Override
-    public ResponseResult<Object> getDailySentence(Integer userId) {
-        Word word = wordMapper.getNextWord(userId);
+    public ResponseResult<Object> getDailySentence() {
+        Word word = wordMapper.getRandomWord();
         //调用AI生成句子
         ResponseResult<Object> sentence = getAiSentence(word.getWordId());
         return sentence;
     }
 
     @Override
-    public ResponseResult<WordVo> getDailyWord(Integer userId) {
-        // 获取该用户还未学过的一个单词
-        Word word = wordMapper.getNextWord(userId);
-        // 如果没有单词了，返回错误信息
-        if (word == null) {
-            return ResponseResult.errorResult(AppHttpCodeEnum.NO_UNLEARNED_WORD);
-        }
+    public ResponseResult<WordVo> getDailyWord() {
+        //从数据库中随机获取一个单词
+        Word word = wordMapper.getRandomWord();
         // 封装该单词的数据为WordVo对象
         WordVo wordVo = getWordVo(word.getWordId());
         return ResponseResult.okResult(wordVo);

@@ -62,15 +62,22 @@ public class UserController {
         return userService.getArticles(request);
     }
 
+
     @GetMapping("/reject")
-    ResponseResult<Object> getRejectedArticles(HttpServletRequest request){
+    ResponseResult<Object> getRejectedArticles(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return userService.getRejectedArticles(userId);
+    }
+
+    @GetMapping("/progress")
+    ResponseResult<Object> getProgress(HttpServletRequest request) {
+        return userService.getProgress(request);
+
     }
 
 }

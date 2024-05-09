@@ -34,5 +34,9 @@ public interface UserService extends IService<User> {
 
     ResponseResult<Object> modifyUserVIP(UserVipDto dto);
 
+
     ResponseResult<Object> getRejectedArticles(Integer id);
+
+    ResponseResult<Object> getProgress(HttpServletRequest request);
+
 }

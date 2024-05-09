@@ -27,7 +27,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     //根据userId获取用户喜欢的文章
     @Select("SELECT * FROM favorites_article WHERE user_id = #{userId} ")
-    List<Integer> getArticleIdByUserId(int userId);
+    List<Integer> getLikeArticle(int userId);
 
     //根据userId获取用户发表的文章
     @Select("SELECT * FROM articles WHERE user_id = #{userId} ")
@@ -37,5 +37,9 @@ public interface ArticleMapper extends BaseMapper<Article> {
     List<Article> getArticleByTitle(@Param("title") String title);
 
     @Select("SELECT * FROM articles WHERE title LIKE CONCAT('%', #{title}, '%') and user_id = #{userId}")
-    Article getArticleByTitleAndUser(@Param("title") String title,@Param("id") int userId);
+    Article getArticleByTitleAndUser(@Param("title") String title, @Param("id") int userId);
+
+    //根据文章id获取文章图片
+    @Select("SELECT url FROM article_urls WHERE article_id = #{articleId}")
+    String[] getPictureByArticleId(Integer articleId);
 }
