@@ -2,7 +2,9 @@ package com.example.dmwbackend.controller;
 
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.AiContactDto;
 import com.example.dmwbackend.pojo.Word;
+import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.WordVo;
@@ -24,6 +26,9 @@ public class StudyController {
 
     @Autowired
     WordService wordService;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/ai/{id}")
     public ResponseResult<Object> getAiSentence(@PathVariable("id") Integer id) {
@@ -81,5 +86,10 @@ public class StudyController {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.getReviewWords(userId);
+    }
+
+    @GetMapping("/talk")
+    public ResponseResult<Object> getAiContent(@RequestBody AiContactDto dto){
+        return userService.getAiContactSentence(dto);
     }
 }

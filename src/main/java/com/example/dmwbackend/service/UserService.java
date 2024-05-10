@@ -2,10 +2,7 @@ package com.example.dmwbackend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dmwbackend.config.ResponseResult;
-import com.example.dmwbackend.dto.LoginDto;
-import com.example.dmwbackend.dto.RegisterDto;
-import com.example.dmwbackend.dto.UserUpdateDto;
-import com.example.dmwbackend.dto.UserVipDto;
+import com.example.dmwbackend.dto.*;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.vo.UserVo;
@@ -40,5 +37,7 @@ public interface UserService extends IService<User> {
     ResponseResult<Object> getProgress(HttpServletRequest request);
 
     ResponseResult<Object> changeUserState(Integer user,Integer state);
+
+    ResponseResult<Object> getAiContactSentence(AiContactDto dto);
 
 }

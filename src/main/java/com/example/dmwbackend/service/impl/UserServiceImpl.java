@@ -4,16 +4,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
-import com.example.dmwbackend.dto.LoginDto;
-import com.example.dmwbackend.dto.RegisterDto;
-import com.example.dmwbackend.dto.UserUpdateDto;
-import com.example.dmwbackend.dto.UserVipDto;
+import com.example.dmwbackend.dto.*;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.HashUtil;
+import com.example.dmwbackend.util.LLMGenerator;
+import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.ArticleVo;
 import com.example.dmwbackend.vo.AuthorVo;
@@ -42,6 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     ArticleMapper articleMapper;
+
 
     @Override
     public ResponseResult<Object> login(LoginDto dto) {
@@ -196,6 +196,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user1.setState(state==0 ?"read":"readAndWrite");
         updateById(user1);
         return ResponseResult.okResult(null);
+    }
+
+    @Override
+    public ResponseResult<Object> getAiContactSentence(AiContactDto dto) {
+        String s = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getDialoguePrompt(dto.getLLMReply()+" "+dto.getUserReply(), dto.getIsFirst())));
+        HashMap<String, String> res = new HashMap<>();
+        res.put("content",s);
+        res.put("content-type","text");
+        return ResponseResult.okResult(res);
     }
 
 }

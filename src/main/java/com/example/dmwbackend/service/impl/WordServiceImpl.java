@@ -42,7 +42,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     public ResponseResult<Object> getAiSentence(Integer id) {
         Word word = wordMapper.selectById(id);
         String prompt = PromptGenerator.getAiSentencePrompt(word.getEnglish());
-        Map<String, String> response = LLMGenerator.getResponse(prompt, "glm-4");
+        Map<String, String> response = LLMGenerator.getResponse(prompt);
         String res = LLMGenerator.convertResponse(response);
         HashMap<String, String> nres = new HashMap<>();
         if (res.equals("error")) {
@@ -155,7 +155,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     }
 
     private Map<String, Object> getSingleTest(String word) {
-        String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word), "glm-4"));
+        String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word)));
         Map<String, Object> dictionary = new HashMap<>();
         ArrayList<String> choices = new ArrayList<>();
         int answerIndex = -1; // 默认答案索引为-1，表示未找到答案

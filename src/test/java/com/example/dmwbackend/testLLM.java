@@ -28,47 +28,13 @@ import static com.example.dmwbackend.util.TokenGenerator.generateToken;
 public class testLLM {
 
     public static void main(String[] args) {
-        String input = "Q: A term used when acquiring goods or services by exchanging money or its equivalent.\n" +
-                "Options:\n" +
-                "A. Sell\n" +
-                "B. Trade\n" +
-                "C. Barter\n" +
-                "D. Purchase";
-
-        Map<String, Object> dictionary = new HashMap<>();
-        ArrayList<String> choices = new ArrayList<>();
-        int answerIndex = -1; // 默认答案索引为-1，表示未找到答案
-
-        // 使用正则表达式匹配问题
-        String[] questionMatch = input.split("\\r?\\n")[0].split("Q: ");
-        String question = questionMatch.length > 1 ? questionMatch[1].trim() : "";
-
-        // 使用正则表达式匹配选项
-        String[] options = input.split("\\r?\\n");
-        for (int i = 1; i < options.length; i++) {
-            String option = options[i].trim();
-            String[] parts = option.split("\\. ");
-            if (parts.length == 2) {
-                choices.add(parts[1]); // 添加选项值到choices数组
-
-                // 检查这个选项的值是否是要找的答案
-                if (parts[1].equals("Trade")) {
-                    answerIndex = choices.size() - 1; // 设置答案索引
-                }
-            }
-        }
-
-        // 将问题、选项和答案索引存储到字典中
-        dictionary.put("question", question);
-        dictionary.put("choices", choices);
-        if (answerIndex != -1) {
-            dictionary.put("answer", answerIndex); // 如果找到了答案，添加答案索引
-        } else {
-            dictionary.put("answer", null); // 如果没有找到答案，设置为null
-        }
-        // 输出字典信息
-        System.out.println("Dictionary contents:");
-        dictionary.forEach((key, value) -> System.out.println(key + ": " + value));
+        String te="从现在起你是一个雅思口语的考官，名字叫Lee,全程使用英语，与你对话的人会回答你的英语问题，你可以在各个角度与对话人进行对话，现在开始第一句对话";
+        String next="I think is cultural Landmarks,The historical sites such as the Great Wall, the Forbidden City, and the Summer Palace are not only visually stunning but also serve as a window into China's rich past.";
+//        String s1 = LLMGenerator.convertResponse(LLMGenerator.getResponse(te));
+        String o1 = "Beijing, my hometown, is a dynamic modern city steeped in rich history and culture. It boasts magnificent historical sites like the Great Wall and the Forbidden City, as well as bustling business districts and high-tech zones. The unique charm of Peking Duck and Hutongs (narrow alleys) is part of its allure. With distinct seasons, each brings its own beauty and activities. As China's capital, it's also the epicenter of politics, economy, and culture, always buzzing with opportunities and challenges.";
+        String n1="从现在起你是一个雅思口语的考官，全程使用英语，与你对话的人会回答你的英语问题，你可以在各个角度与对话人进行对话，我会给你提供前面一轮的对话："+"Hello Eric, it's nice to meet you. So, coming from China, can you tell me a bit about your hometown? What's special about the place you come from?"+o1;
+        String s = LLMGenerator.convertResponse(LLMGenerator.getResponse(te));
+        System.out.println(s);
     }
 
 

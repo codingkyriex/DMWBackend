@@ -22,7 +22,7 @@ public class LLMGenerator {
     private static final String MODEL_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
 
 
-    public static Map<String, String> getResponse(String prompt, String model) {
+    public static Map<String, String> getResponse(String prompt) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -39,7 +39,7 @@ public class LLMGenerator {
 
         // 创建请求体的Map
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", model);
+        requestBody.put("model", "glm-4");
         requestBody.put("messages", messagesList);
 
         // 使用Jackson库将Map转换为JSON字符串
