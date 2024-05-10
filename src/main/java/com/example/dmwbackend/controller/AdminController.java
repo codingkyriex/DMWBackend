@@ -75,4 +75,9 @@ public class AdminController {
     public ResponseResult<Object> banUser(@PathVariable("id")Integer id,@PathVariable("status") Integer status){
         return userService.changeUserState(id,status);
     }
+
+    @GetMapping("/getArticleById/{id}")
+    public ResponseResult<Object> getArticleById(@PathVariable("id")Integer id){
+        return articleService.getArticlesById(id);
+    }
 }

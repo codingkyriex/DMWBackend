@@ -40,6 +40,5 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult<Object> reviewArticle(Integer id,Integer status);
 
-
-
+    ResponseResult<Object> getArticlesById(Integer id);
 }

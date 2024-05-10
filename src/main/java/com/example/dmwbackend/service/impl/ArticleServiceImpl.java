@@ -291,7 +291,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             map.put("create_time", sdf.format(article.getCreateTime()));
             User user = userMapper.getUserByArticleId(article.getUserId());
             HashMap<String, Object> map1 = new HashMap<>();
-            map1.put("id", user.getUserId());
+            map1.put("articleId", user.getUserId());
             map1.put("name", user.getUsername());
             map1.put("avatar", user.getAvatar());
             map.put("author", map1);
@@ -318,6 +318,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setReviewStatus(status==0?"rejected":"approved");
         updateById(article);
         return ResponseResult.okResult(article.getArticleId());
+    }
+
+    @Override
+    public ResponseResult<Object> getArticlesById(Integer id) {
+        List<Article> article = articleMapper.getArticleByUserId(id);
+        if(article==null){
+            ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
+        User user = userMapper.selectById(id);
+        ArrayList<ArticleVo> articleVos = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        for(Article a:article){
+            articleVos.add(ArticleVo.builder().articleId(a.getArticleId()).userName(user.getUsername()).summary(a.getSummary()).title(a.getTitle()).createTime(sdf.format(a.getCreateTime())).numOfLikes(a.getNumOfLikes()).build());
+        }
+        return ResponseResult.okResult(articleVos);
     }
 
 
