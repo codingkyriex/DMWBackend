@@ -6,6 +6,7 @@ import com.example.dmwbackend.dto.UserVipDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.TokenUtils;
+import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -79,5 +80,10 @@ public class AdminController {
     @GetMapping("/getArticleById/{id}")
     public ResponseResult<Object> getArticleById(@PathVariable("id")Integer id){
         return articleService.getArticlesById(id);
+    }
+
+    @GetMapping("/getUserInfo/{id}")
+    public ResponseResult<UserVo> getDetailUser(@PathVariable("id") Integer id){
+        return userService.getUserInfo(id);
     }
 }

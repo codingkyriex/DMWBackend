@@ -74,6 +74,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public ResponseResult<UserVo> getUserInfo(Integer id) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        } else {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            return ResponseResult.okResult(userVo);
+        }
+    }
+
+    @Override
     public ResponseResult<Object> updateInfo(UserUpdateDto updateDto, HttpServletRequest request) {
         //根据token获取当前用户
         String token = request.getHeader("Authorization");

@@ -288,7 +288,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             map.put("pictures", urls);
             map.put("status", article.getReviewStatus());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            map.put("create_time", sdf.format(article.getCreateTime()));
+            map.put("createTime", sdf.format(article.getCreateTime()));
             User user = userMapper.getUserByArticleId(article.getUserId());
             HashMap<String, Object> map1 = new HashMap<>();
             map1.put("articleId", user.getUserId());
@@ -306,6 +306,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         queryWrapper.eq("review_status", "pending"); // 假设"status"是您表中状态的字段名
         Page<Article> page = new Page<>(pageNum, pageSize);
         List<Article> records = articleMapper.selectPage(page, queryWrapper).getRecords();
+        ArrayList<ArticleVo> res = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        for(Article a:records){
+            User user = userMapper.selectById(a.getUserId());
+            res.add(ArticleVo.builder().articleId(a.getArticleId()).userName(user.getUsername()).summary(a.getSummary()).title(a.getTitle()).createTime(sdf.format(a.getCreateTime())).numOfLikes(a.getNumOfLikes()).build());
+        }
         return ResponseResult.okResult(records);
     }
 

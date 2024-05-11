@@ -29,8 +29,6 @@ public class User {
     @TableField(value = "avatar")
     private String avatar;
 
-    @TableField("review_status")
-    private String reviewStatus;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
