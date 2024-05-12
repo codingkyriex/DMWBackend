@@ -92,4 +92,15 @@ public class StudyController {
     public ResponseResult<Object> getAiContent(@RequestBody AiContactDto dto){
         return userService.getAiContactSentence(dto);
     }
+
+    @GetMapping("/like/get")
+    public ResponseResult<Object> getLikeWord(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if(tokenError!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
+        return wordService.getLikedWord(userId);
+    }
 }

@@ -3,9 +3,11 @@ package com.example.dmwbackend.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.mapper.FavoritesWordMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.mapper.UserWordProgressMapper;
 import com.example.dmwbackend.mapper.WordMapper;
+import com.example.dmwbackend.pojo.FavoritesWord;
 import com.example.dmwbackend.pojo.User;
 import com.example.dmwbackend.pojo.UserWordProgress;
 import com.example.dmwbackend.pojo.Word;
@@ -37,6 +39,9 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
 
     @Autowired
     private UserWordProgressMapper userWordProgressMapper;
+
+    @Autowired
+    private FavoritesWordMapper favoritesWordMapper;
 
     @Override
     public ResponseResult<Object> getAiSentence(Integer id) {
@@ -152,6 +157,21 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         // 封装该单词的数据为WordVo对象
         WordVo wordVo = getWordVo(word.getWordId());
         return ResponseResult.okResult(wordVo);
+    }
+
+    @Override
+    public ResponseResult<Object> getLikedWord(Integer userId) {
+        List<FavoritesWord> likedWords = favoritesWordMapper.getLikedWords(userId);
+        ArrayList<HashMap<String,Object>> res = new ArrayList<>();
+        for(FavoritesWord word:likedWords){
+            HashMap<String, Object> map = new HashMap<>();
+            Word word1 = wordMapper.selectById(word.getWordId());
+            map.put("word_id",word1.getWordId());
+            map.put("chinese",word1.getChinese());
+            map.put("english",word1.getEnglish());
+            res.add(map);
+        }
+        return ResponseResult.okResult(res);
     }
 
     private Map<String, Object> getSingleTest(String word) {

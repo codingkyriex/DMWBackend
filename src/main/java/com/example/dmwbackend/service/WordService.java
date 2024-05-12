@@ -29,4 +29,6 @@ public interface WordService {
     ResponseResult<Object> getDailySentence();
 
     ResponseResult<WordVo> getDailyWord();
+
+    ResponseResult<Object> getLikedWord(Integer userId);
 }
