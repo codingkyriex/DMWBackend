@@ -277,7 +277,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArrayList<Map<String, Object>> res = new ArrayList<>();
         for (Article article : records) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("id", article.getArticleId());
+            map.put("articleId", article.getArticleId());
             map.put("title", article.getTitle());
             map.put("summary", article.getSummary());
             List<ArticleUrl> articleUrl = articleUrlMapper.getArticleUrl(article.getArticleId());
@@ -291,7 +291,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             map.put("createTime", sdf.format(article.getCreateTime()));
             User user = userMapper.getUserByArticleId(article.getUserId());
             HashMap<String, Object> map1 = new HashMap<>();
-            map1.put("articleId", user.getUserId());
+            map1.put("userId", user.getUserId());
             map1.put("name", user.getUsername());
             map1.put("avatar", user.getAvatar());
             map.put("author", map1);
@@ -312,7 +312,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             User user = userMapper.selectById(a.getUserId());
             res.add(ArticleVo.builder().articleId(a.getArticleId()).userName(user.getUsername()).summary(a.getSummary()).title(a.getTitle()).createTime(sdf.format(a.getCreateTime())).numOfLikes(a.getNumOfLikes()).build());
         }
-        return ResponseResult.okResult(records);
+        return ResponseResult.okResult(res);
     }
 
     @Override
