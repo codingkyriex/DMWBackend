@@ -94,6 +94,9 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         }
         // 更新用户的学习进度
         User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
         int progress = user.getProgress();
         progress++;
         user.setProgress(progress);
@@ -162,13 +165,13 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     @Override
     public ResponseResult<Object> getLikedWord(Integer userId) {
         List<FavoritesWord> likedWords = favoritesWordMapper.getLikedWords(userId);
-        ArrayList<HashMap<String,Object>> res = new ArrayList<>();
-        for(FavoritesWord word:likedWords){
+        ArrayList<HashMap<String, Object>> res = new ArrayList<>();
+        for (FavoritesWord word : likedWords) {
             HashMap<String, Object> map = new HashMap<>();
             Word word1 = wordMapper.selectById(word.getWordId());
-            map.put("word_id",word1.getWordId());
-            map.put("chinese",word1.getChinese());
-            map.put("english",word1.getEnglish());
+            map.put("word_id", word1.getWordId());
+            map.put("chinese", word1.getChinese());
+            map.put("english", word1.getEnglish());
             res.add(map);
         }
         return ResponseResult.okResult(res);
