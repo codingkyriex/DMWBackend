@@ -111,5 +111,17 @@ public class StudyController {
         return wordService.getBooks();
     }
 
+    //选择单词书
+    @PostMapping("/choose/{bookId}")
+    public ResponseResult<Object> chooseBook(@PathVariable Integer bookId, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        Integer userId = TokenUtils.getUserIdFromToken(token);
+        String tokenError = (String) request.getAttribute("tokenError");
+        if (tokenError != null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
+        }
+        return wordService.chooseBook(userId, bookId);
+    }
+
 
 }

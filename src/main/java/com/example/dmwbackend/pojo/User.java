@@ -2,7 +2,9 @@ package com.example.dmwbackend.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+
 import java.util.Date;
+
 /**
  * @description: 用户
  * @author: eric
@@ -44,5 +46,8 @@ public class User {
 
     @TableField(value = "state")
     private String state;
+
+    @TableField(value = "book")
+    private Integer book;
 
 }

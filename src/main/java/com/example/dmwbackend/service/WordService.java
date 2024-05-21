@@ -34,4 +34,6 @@ public interface WordService {
     ResponseResult<Object> getLikedWord(Integer userId);
 
     ResponseResult<Vocabulary> getBooks();
+
+    ResponseResult<Object> chooseBook(Integer userId, Integer bookId);
 }

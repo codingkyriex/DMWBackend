@@ -13,6 +13,7 @@ public enum AppHttpCodeEnum {
     MISS_USER(400, "找不到用户"),
     MISS_ITEM(401, "找不到商品"),
     MISS_FAVOLIST(402, "找不到收藏夹"),
+    MISS_BOOK(400, "找不到该单词书"),
     // 登录段1~50
     NEED_LOGIN(1, "新用户登录"),
     LOGIN_PASSWORD_ERROR(2, "密码错误"),

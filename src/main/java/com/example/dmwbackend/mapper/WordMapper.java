@@ -46,4 +46,8 @@ public interface WordMapper extends BaseMapper<Word> {
     // 获取全部单词书
     @Select("SELECT * FROM vocabulary")
     List<Vocabulary> getBooks();
+
+    // 根据bookId查询单词书
+    @Select("SELECT * FROM vocabulary WHERE book_id = #{bookId}")
+    Vocabulary selectBookById(Integer bookId);
 }

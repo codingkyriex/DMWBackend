@@ -180,6 +180,22 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return ResponseResult.okResult(books);
     }
 
+    @Override
+    public ResponseResult<Object> chooseBook(Integer userId, Integer bookId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        //判断单词书表中是否有该单词书
+        Vocabulary book = wordMapper.selectBookById(bookId);
+        if (book == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_BOOK);
+        }
+        user.setBook(bookId);
+        userMapper.updateById(user);
+        return ResponseResult.okResult("");
+    }
+
     private Map<String, Object> getSingleTest(String word) {
         String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word)));
         Map<String, Object> dictionary = new HashMap<>();
