@@ -14,14 +14,12 @@ import com.example.dmwbackend.util.HashUtil;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.TokenUtils;
-import com.example.dmwbackend.vo.ArticleVo;
-import com.example.dmwbackend.vo.AuthorVo;
-import com.example.dmwbackend.vo.LikeArticleVo;
-import com.example.dmwbackend.vo.UserVo;
+import com.example.dmwbackend.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.Int;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,7 +178,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public ResponseResult<Object> getRejectedArticles(Integer id) {
         User user = userMapper.selectById(id);
-        if(user==null){
+        if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         List<Article> articles = articleMapper.getRejectedArticle(id);
@@ -188,34 +186,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
-    public ResponseResult<Object> getProgress(HttpServletRequest request) {
+    public ResponseResult<ProgressVo> getProgress(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         User user = userMapper.selectById(userId);
         if (user == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
+        ProgressVo progressVo = new ProgressVo();
         Integer progress = user.getProgress();
-        return ResponseResult.okResult(progress);
+        progressVo.setProgress(progress);
+        Integer book = user.getBook();
+        progressVo.setBook(book);
+        return ResponseResult.okResult(progressVo);
     }
 
     @Override
-    public ResponseResult<Object> changeUserState(Integer user,Integer state) {
+    public ResponseResult<Object> changeUserState(Integer user, Integer state) {
         User user1 = userMapper.selectById(user);
-        if(user1==null){
+        if (user1 == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
-        user1.setState(state==0 ?"read":"readAndWrite");
+        user1.setState(state == 0 ? "read" : "readAndWrite");
         updateById(user1);
         return ResponseResult.okResult(null);
     }
 
     @Override
     public ResponseResult<Object> getAiContactSentence(AiContactDto dto) {
-        String s = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getDialoguePrompt(dto.getLLMReply()+" "+dto.getUserReply(), dto.getIsFirst())));
+        String s = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getDialoguePrompt(dto.getLLMReply() + " " + dto.getUserReply(), dto.getIsFirst())));
         HashMap<String, String> res = new HashMap<>();
-        res.put("content",s);
-        res.put("content-type","text");
+        res.put("content", s);
+        res.put("content-type", "text");
         return ResponseResult.okResult(res);
     }
 
