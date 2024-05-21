@@ -30,7 +30,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
     List<Integer> getLikeArticle(int userId);
 
     //根据userId获取用户发表的文章
-    @Select("SELECT * FROM articles WHERE user_id = #{userId} ")
+    @Select("SELECT * FROM articles WHERE user_id = #{userId} and review_status = 'approved'")
     List<Article> getArticleByUserId(int userId);
 
     @Select("SELECT * FROM articles WHERE title LIKE CONCAT('%', #{title}, '%')")

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -153,6 +154,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //创建新用户
         User newUser = new User();
         newUser.setUsername(dto.getUsername());
+        newUser.setState("readAndWrite");
+        newUser.setAvatar("http://49.233.255.219/images/profile.jpg");
+        newUser.setVipLevel(0);
+        newUser.setVipStatus("non_vip");
+        newUser.setProgress(0);
+        newUser.setPoints(0);
+        newUser.setCreateTime(new Date());
         newUser.setPassword(HashUtil.getHash(dto.getPassword()));
         userMapper.insert(newUser);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);

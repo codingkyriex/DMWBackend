@@ -64,6 +64,12 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         List<UserWordProgress> progress = userWordProgressMapper.getProgressById(u);
+        if(progress.size()==0){
+            List<Word> words = wordMapper.selectList(null);
+            Collections.shuffle(words);
+            Word word = wordMapper.selectById(words.get(0).getWordId());
+            return ResponseResult.okResult(getSingleTest(word.getEnglish()));
+        }
         // 使用Stream API进行排序和截取操作
         List<UserWordProgress> sortedList = progress.stream()
                 .sorted((a, b) -> b.getDay().compareTo(a.getDay()))
@@ -76,7 +82,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
                     .sorted((a, b) -> b.getDay().compareTo(a.getDay()))
                     .collect(Collectors.toList());
         }
-        UserWordProgress p = SortUtil.selectRandomWithBias(sortedList);
+        UserWordProgress p = SortUtil.selectRandom(sortedList);
         Map<String, Object> res = null;
         Word word = wordMapper.selectById(p.getWordId());
         res = getSingleTest(word.getEnglish());
@@ -133,8 +139,15 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     public ResponseResult<List<WordVo>> getReviewWords(Integer userId) {
         // 从user_word_progress表中获取所有学习状态为'forget'的单词
         List<Integer> reviewList = wordMapper.getReviewWords(userId);
-        //根据reviewList获取单词列表
         List<WordVo> reviewWords = new ArrayList<>();
+        if(reviewList.size()==0){
+            List<Word> words = wordMapper.selectList(null);
+            Collections.shuffle(words);
+            for(int i=0;i<10;i++){
+                reviewWords.add(getWordVo(words.get(i).getWordId()));
+            }
+        }
+
         for (Integer wordId : reviewList) {
             WordVo wordVo = getWordVo(wordId);
             reviewWords.add(wordVo);

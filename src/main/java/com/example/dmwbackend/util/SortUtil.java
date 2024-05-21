@@ -1,5 +1,7 @@
 package com.example.dmwbackend.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -32,5 +34,20 @@ public class SortUtil {
 
         // 如果由于浮点数精度问题没有返回，返回列表中的最后一个元素
         return list.get(list.size() - 1);
+    }
+
+    public static <T> T selectRandom(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+
+        // 创建一个列表的副本，以避免修改原始列表
+        List<T> shuffledList = new ArrayList<>(list);
+
+        // 打乱列表
+        Collections.shuffle(shuffledList);
+
+        // 返回打乱后列表的第一个元素
+        return shuffledList.get(0);
     }
 }
