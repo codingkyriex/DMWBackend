@@ -1,6 +1,7 @@
 package com.example.dmwbackend.service;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.pojo.Vocabulary;
 import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.vo.WordVo;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,4 +32,6 @@ public interface WordService {
     ResponseResult<WordVo> getDailyWord();
 
     ResponseResult<Object> getLikedWord(Integer userId);
+
+    ResponseResult<Vocabulary> getBooks();
 }

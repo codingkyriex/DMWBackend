@@ -3,6 +3,7 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.AiContactDto;
+import com.example.dmwbackend.pojo.Vocabulary;
 import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.service.WordService;
@@ -40,7 +41,7 @@ public class StudyController {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.getAiTest(userId);
@@ -52,7 +53,7 @@ public class StudyController {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.getNextWord(userId);
@@ -70,7 +71,7 @@ public class StudyController {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.likeWord(userId, wordId);
@@ -82,25 +83,33 @@ public class StudyController {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.getReviewWords(userId);
     }
 
     @GetMapping("/talk")
-    public ResponseResult<Object> getAiContent(@RequestBody AiContactDto dto){
+    public ResponseResult<Object> getAiContent(@RequestBody AiContactDto dto) {
         return userService.getAiContactSentence(dto);
     }
 
     @GetMapping("/like/get")
-    public ResponseResult<Object> getLikeWord(HttpServletRequest request){
+    public ResponseResult<Object> getLikeWord(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         Integer userId = TokenUtils.getUserIdFromToken(token);
         String tokenError = (String) request.getAttribute("tokenError");
-        if(tokenError!=null){
+        if (tokenError != null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.valueOf(tokenError));
         }
         return wordService.getLikedWord(userId);
     }
+
+    //获取全部可选单词书
+    @GetMapping("/books")
+    public ResponseResult<Vocabulary> getBooks() {
+        return wordService.getBooks();
+    }
+
+
 }

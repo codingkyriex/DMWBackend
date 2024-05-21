@@ -7,10 +7,7 @@ import com.example.dmwbackend.mapper.FavoritesWordMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.mapper.UserWordProgressMapper;
 import com.example.dmwbackend.mapper.WordMapper;
-import com.example.dmwbackend.pojo.FavoritesWord;
-import com.example.dmwbackend.pojo.User;
-import com.example.dmwbackend.pojo.UserWordProgress;
-import com.example.dmwbackend.pojo.Word;
+import com.example.dmwbackend.pojo.*;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
@@ -175,6 +172,12 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
             res.add(map);
         }
         return ResponseResult.okResult(res);
+    }
+
+    @Override
+    public ResponseResult<Vocabulary> getBooks() {
+        List<Vocabulary> books = wordMapper.getBooks();
+        return ResponseResult.okResult(books);
     }
 
     private Map<String, Object> getSingleTest(String word) {

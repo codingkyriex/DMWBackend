@@ -1,6 +1,7 @@
 package com.example.dmwbackend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.dmwbackend.pojo.Vocabulary;
 import com.example.dmwbackend.pojo.Word;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,4 +43,7 @@ public interface WordMapper extends BaseMapper<Word> {
     @Select("SELECT * FROM word ORDER BY RAND() LIMIT 1")
     Word getRandomWord();
 
+    // 获取全部单词书
+    @Select("SELECT * FROM vocabulary")
+    List<Vocabulary> getBooks();
 }
