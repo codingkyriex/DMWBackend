@@ -7,10 +7,7 @@ import com.example.dmwbackend.mapper.FavoritesWordMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.mapper.UserWordProgressMapper;
 import com.example.dmwbackend.mapper.WordMapper;
-import com.example.dmwbackend.pojo.FavoritesWord;
-import com.example.dmwbackend.pojo.User;
-import com.example.dmwbackend.pojo.UserWordProgress;
-import com.example.dmwbackend.pojo.Word;
+import com.example.dmwbackend.pojo.*;
 import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
@@ -100,6 +97,9 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         }
         // 更新用户的学习进度
         User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
         int progress = user.getProgress();
         progress++;
         user.setProgress(progress);
@@ -175,16 +175,38 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     @Override
     public ResponseResult<Object> getLikedWord(Integer userId) {
         List<FavoritesWord> likedWords = favoritesWordMapper.getLikedWords(userId);
-        ArrayList<HashMap<String,Object>> res = new ArrayList<>();
-        for(FavoritesWord word:likedWords){
+        ArrayList<HashMap<String, Object>> res = new ArrayList<>();
+        for (FavoritesWord word : likedWords) {
             HashMap<String, Object> map = new HashMap<>();
             Word word1 = wordMapper.selectById(word.getWordId());
-            map.put("word_id",word1.getWordId());
-            map.put("chinese",word1.getChinese());
-            map.put("english",word1.getEnglish());
+            map.put("word_id", word1.getWordId());
+            map.put("chinese", word1.getChinese());
+            map.put("english", word1.getEnglish());
             res.add(map);
         }
         return ResponseResult.okResult(res);
+    }
+
+    @Override
+    public ResponseResult<Vocabulary> getBooks() {
+        List<Vocabulary> books = wordMapper.getBooks();
+        return ResponseResult.okResult(books);
+    }
+
+    @Override
+    public ResponseResult<Object> chooseBook(Integer userId, Integer bookId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
+        }
+        //判断单词书表中是否有该单词书
+        Vocabulary book = wordMapper.selectBookById(bookId);
+        if (book == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_BOOK);
+        }
+        user.setBook(bookId);
+        userMapper.updateById(user);
+        return ResponseResult.okResult("");
     }
 
     private Map<String, Object> getSingleTest(String word) {

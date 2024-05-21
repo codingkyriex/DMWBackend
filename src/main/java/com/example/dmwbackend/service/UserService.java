@@ -5,6 +5,7 @@ import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.*;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
+import com.example.dmwbackend.vo.ProgressVo;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -36,7 +37,7 @@ public interface UserService extends IService<User> {
 
     ResponseResult<Object> getRejectedArticles(Integer id);
 
-    ResponseResult<Object> getProgress(HttpServletRequest request);
+    ResponseResult<ProgressVo> getProgress(HttpServletRequest request);
 
     ResponseResult<Object> changeUserState(Integer user,Integer state);
 

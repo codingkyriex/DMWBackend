@@ -8,6 +8,7 @@ import com.example.dmwbackend.dto.UserUpdateDto;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.TokenUtils;
+import com.example.dmwbackend.vo.ProgressVo;
 import com.example.dmwbackend.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,8 @@ public class UserController {
     }
 
     @GetMapping("/progress")
-    ResponseResult<Object> getProgress(HttpServletRequest request) {
+    ResponseResult<ProgressVo> getProgress(HttpServletRequest request) {
         return userService.getProgress(request);
-
     }
 
 }
