@@ -1,6 +1,7 @@
 package com.example.dmwbackend.service;
 
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.WordDto;
 import com.example.dmwbackend.pojo.Vocabulary;
 import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.vo.WordVo;
@@ -36,4 +37,12 @@ public interface WordService {
     ResponseResult<Vocabulary> getBooks();
 
     ResponseResult<Object> chooseBook(Integer userId, Integer bookId);
+
+    ResponseResult<Object> getUsersWords();
+
+    ResponseResult<Object> getAllWords(String word,Integer pageNum,Integer pageSize);
+
+    ResponseResult<Object> updateWord(Integer id, WordDto dto);
+
+
 }

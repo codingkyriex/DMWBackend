@@ -1,8 +1,11 @@
 package com.example.dmwbackend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.dmwbackend.config.AppHttpCodeEnum;
 import com.example.dmwbackend.config.ResponseResult;
+import com.example.dmwbackend.dto.WordDto;
 import com.example.dmwbackend.mapper.FavoritesWordMapper;
 import com.example.dmwbackend.mapper.UserMapper;
 import com.example.dmwbackend.mapper.UserWordProgressMapper;
@@ -12,10 +15,15 @@ import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.SortUtil;
+import com.example.dmwbackend.vo.UserVo;
+import com.example.dmwbackend.vo.UserWordVo;
 import com.example.dmwbackend.vo.WordVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -207,6 +215,65 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         user.setBook(bookId);
         userMapper.updateById(user);
         return ResponseResult.okResult("");
+    }
+
+    @Override
+    public ResponseResult<Object> getUsersWords() {
+        List<User> users = userMapper.selectList(null);
+        ArrayList<UserWordVo> userWordVos = new ArrayList<>();
+        for(User u:users){
+            ArrayList<Integer> forget = new ArrayList<>();
+            ArrayList<Integer> know = new ArrayList<>();
+            List<UserWordProgress> progress = userWordProgressMapper.getProgressById(u.getUserId());
+            for(UserWordProgress p:progress){
+                long millisBetween = Math.abs(new Date().getTime()-p.getDay().getTime());
+
+                // 将毫秒数转换为天数
+                long daysBetween = millisBetween / (1000 * 60 * 60 * 24);
+                if(Math.abs(daysBetween)>=10){
+                    forget.add(p.getWordId());
+                }else{
+                    know.add(p.getWordId());
+                }
+            }
+            userWordVos.add(UserWordVo.builder().userId(u.getUserId()).knowWord(know).forgetWord(forget).know(know.size()).total(know.size()+forget.size()).build());
+        }
+        return ResponseResult.okResult(userWordVos);
+    }
+
+    @Override
+    public ResponseResult<Object> getAllWords(String word, Integer pageNum, Integer pageSize) {
+        Page<Word> page = new Page<>(pageNum, pageSize);
+        if(Objects.equals(word, "")){
+            List<Word> records = wordMapper.selectPage(page, null).getRecords();
+            return ResponseResult.okResult(records);
+        }
+        QueryWrapper<Word> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("english", word);
+        List<Word> records = wordMapper.selectPage(page, queryWrapper).getRecords();
+        return ResponseResult.okResult(records);
+    }
+
+    @Override
+    public ResponseResult<Object> updateWord(Integer id, WordDto dto) {
+        Word word = wordMapper.selectById(id);
+        if(word==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
+        }
+        if(!Objects.equals(dto.getChinese(), "")){
+            word.setChinese(dto.getChinese());
+        }
+        if(!Objects.equals(dto.getEnglish(), "")){
+            word.setEnglish(dto.getEnglish());
+        }
+        if(!Objects.equals(dto.getProperty(), "")){
+            word.setProperty(dto.getProperty());
+        }
+        if(!Objects.equals(dto.getExample(), "")){
+            word.setExample(dto.getExample());
+        }
+        wordMapper.updateById(word);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     private Map<String, Object> getSingleTest(String word) {

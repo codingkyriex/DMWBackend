@@ -3,10 +3,13 @@ package com.example.dmwbackend.controller;
 import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.dto.UserVipDto;
+import com.example.dmwbackend.dto.WordDto;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.UserService;
+import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.TokenUtils;
 import com.example.dmwbackend.vo.UserVo;
+import com.example.dmwbackend.vo.UserWordVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,9 @@ public class AdminController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    WordService wordService;
 
     @PostMapping("/modify")
     public ResponseResult<Object> modifyArticle(@RequestBody ArticleModifyDto dto){
@@ -85,5 +91,20 @@ public class AdminController {
     @GetMapping("/getUserInfo/{id}")
     public ResponseResult<UserVo> getDetailUser(@PathVariable("id") Integer id){
         return userService.getUserInfo(id);
+    }
+
+    @GetMapping("/getUserWords")
+    public ResponseResult<Object> getUserWords(){
+        return wordService.getUsersWords();
+    }
+
+    @GetMapping("/getAllWords")
+    public ResponseResult<Object> getAllWords(@RequestParam(name = "word", defaultValue = "") String word,@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+        return wordService.getAllWords(word,pageNum,pageSize);
+    }
+
+    @PostMapping("/updateWord/{id}")
+    public ResponseResult<Object> updateWord(@PathVariable("id") Integer id,@RequestBody WordDto dto){
+        return wordService.updateWord(id,dto);
     }
 }

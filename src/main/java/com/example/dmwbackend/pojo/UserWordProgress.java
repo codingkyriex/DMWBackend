@@ -24,4 +24,5 @@ public class UserWordProgress implements Serializable {
     @TableField("day")
     private Date day;
 
+
 }
