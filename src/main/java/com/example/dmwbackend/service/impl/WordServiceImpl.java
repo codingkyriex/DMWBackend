@@ -277,7 +277,15 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     }
 
     private Map<String, Object> getSingleTest(String word) {
-        String response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word)));
+        Random random = new Random();
+        int randomInt = random.nextInt(101);
+        String response = "";
+        if(randomInt % 2 == 0){
+            response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word)));
+        }
+        else{
+            response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getCEGuessTest(word)));
+        }
         Map<String, Object> dictionary = new HashMap<>();
         ArrayList<String> choices = new ArrayList<>();
         int answerIndex = -1; // 默认答案索引为-1，表示未找到答案
