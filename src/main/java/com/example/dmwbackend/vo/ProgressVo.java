@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 public class ProgressVo {
     private Integer progress;
 
-    private Integer book;
+    private String bookName;
 }

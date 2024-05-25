@@ -7,8 +7,10 @@ import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.*;
 import com.example.dmwbackend.mapper.ArticleMapper;
 import com.example.dmwbackend.mapper.UserMapper;
+import com.example.dmwbackend.mapper.VocabularyMapper;
 import com.example.dmwbackend.pojo.Article;
 import com.example.dmwbackend.pojo.User;
+import com.example.dmwbackend.pojo.Vocabulary;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.util.HashUtil;
 import com.example.dmwbackend.util.LLMGenerator;
@@ -41,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     ArticleMapper articleMapper;
 
+    @Autowired
+    VocabularyMapper vocabularyMapper;
 
     @Override
     public ResponseResult<Object> login(LoginDto dto) {
@@ -204,8 +208,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         ProgressVo progressVo = new ProgressVo();
         Integer progress = user.getProgress();
         progressVo.setProgress(progress);
-        Integer book = user.getBook();
-        progressVo.setBook(book);
+        Integer bookId = user.getBook();
+        Vocabulary book = vocabularyMapper.selectById(bookId);
+        progressVo.setBookName(book.getName());
         return ResponseResult.okResult(progressVo);
     }
 
