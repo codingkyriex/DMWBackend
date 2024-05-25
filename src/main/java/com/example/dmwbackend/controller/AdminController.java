@@ -4,6 +4,7 @@ import com.example.dmwbackend.config.ResponseResult;
 import com.example.dmwbackend.dto.ArticleModifyDto;
 import com.example.dmwbackend.dto.UserVipDto;
 import com.example.dmwbackend.dto.WordDto;
+import com.example.dmwbackend.pojo.Word;
 import com.example.dmwbackend.service.ArticleService;
 import com.example.dmwbackend.service.UserService;
 import com.example.dmwbackend.service.WordService;
@@ -106,5 +107,10 @@ public class AdminController {
     @PostMapping("/updateWord/{id}")
     public ResponseResult<Object> updateWord(@PathVariable("id") Integer id,@RequestBody WordDto dto){
         return wordService.updateWord(id,dto);
+    }
+
+    @GetMapping("/getWord/{id}")
+    public ResponseResult<Word> getWord(@PathVariable("id") Integer id){
+        return wordService.getWordDetail(id);
     }
 }

@@ -243,6 +243,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
 
     @Override
     public ResponseResult<Object> getAllWords(String word, Integer pageNum, Integer pageSize) {
+        List<Word> words = wordMapper.selectList(null);
         Page<Word> page = new Page<>(pageNum, pageSize);
         if(Objects.equals(word, "")){
             List<Word> records = wordMapper.selectPage(page, null).getRecords();
@@ -251,7 +252,10 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         QueryWrapper<Word> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("english", word);
         List<Word> records = wordMapper.selectPage(page, queryWrapper).getRecords();
-        return ResponseResult.okResult(records);
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("record",records);
+        res.put("num",words.size());
+        return ResponseResult.okResult(res);
     }
 
     @Override
