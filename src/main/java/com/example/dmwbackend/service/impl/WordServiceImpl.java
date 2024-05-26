@@ -15,15 +15,11 @@ import com.example.dmwbackend.service.WordService;
 import com.example.dmwbackend.util.LLMGenerator;
 import com.example.dmwbackend.util.PromptGenerator;
 import com.example.dmwbackend.util.SortUtil;
-import com.example.dmwbackend.vo.UserVo;
 import com.example.dmwbackend.vo.UserWordVo;
 import com.example.dmwbackend.vo.WordVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,7 +65,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_USER);
         }
         List<UserWordProgress> progress = userWordProgressMapper.getProgressById(u);
-        if(progress.size()==0){
+        if (progress.size() == 0) {
             List<Word> words = wordMapper.selectList(null);
             Collections.shuffle(words);
             Word word = wordMapper.selectById(words.get(0).getWordId());
@@ -148,12 +144,16 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         // 从user_word_progress表中获取所有学习状态为'forget'的单词
         List<Integer> reviewList = wordMapper.getReviewWords(userId);
         List<WordVo> reviewWords = new ArrayList<>();
-        if(reviewList.size()==0){
+        if (reviewList.isEmpty()) {
+            // 从单词表中获取所有单词
             List<Word> words = wordMapper.selectList(null);
+            // 随机打乱单词列表
             Collections.shuffle(words);
-            for(int i=0;i<10;i++){
-                reviewWords.add(getWordVo(words.get(i).getWordId()));
-            }
+            // 选择前10个
+            reviewWords = words.stream()
+                    .limit(10)
+                    .map(word -> getWordVo(word.getWordId()))
+                    .collect(Collectors.toList());
         }
 
         for (Integer wordId : reviewList) {
@@ -221,22 +221,22 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     public ResponseResult<Object> getUsersWords() {
         List<User> users = userMapper.selectList(null);
         ArrayList<UserWordVo> userWordVos = new ArrayList<>();
-        for(User u:users){
+        for (User u : users) {
             ArrayList<Integer> forget = new ArrayList<>();
             ArrayList<Integer> know = new ArrayList<>();
             List<UserWordProgress> progress = userWordProgressMapper.getProgressById(u.getUserId());
-            for(UserWordProgress p:progress){
-                long millisBetween = Math.abs(new Date().getTime()-p.getDay().getTime());
+            for (UserWordProgress p : progress) {
+                long millisBetween = Math.abs(new Date().getTime() - p.getDay().getTime());
 
                 // 将毫秒数转换为天数
                 long daysBetween = millisBetween / (1000 * 60 * 60 * 24);
-                if(Math.abs(daysBetween)>=10){
+                if (Math.abs(daysBetween) >= 10) {
                     forget.add(p.getWordId());
-                }else{
+                } else {
                     know.add(p.getWordId());
                 }
             }
-            userWordVos.add(UserWordVo.builder().userId(u.getUserId()).knowWord(know).forgetWord(forget).know(know.size()).total(know.size()+forget.size()).build());
+            userWordVos.add(UserWordVo.builder().userId(u.getUserId()).knowWord(know).forgetWord(forget).know(know.size()).total(know.size() + forget.size()).build());
         }
         return ResponseResult.okResult(userWordVos);
     }
@@ -245,7 +245,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     public ResponseResult<Object> getAllWords(String word, Integer pageNum, Integer pageSize) {
         List<Word> words = wordMapper.selectList(null);
         Page<Word> page = new Page<>(pageNum, pageSize);
-        if(Objects.equals(word, "")){
+        if (Objects.equals(word, "")) {
             List<Word> records = wordMapper.selectPage(page, null).getRecords();
             return ResponseResult.okResult(records);
         }
@@ -253,27 +253,27 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         queryWrapper.like("english", word);
         List<Word> records = wordMapper.selectPage(page, queryWrapper).getRecords();
         HashMap<String, Object> res = new HashMap<>();
-        res.put("record",records);
-        res.put("num",words.size());
+        res.put("record", records);
+        res.put("num", words.size());
         return ResponseResult.okResult(res);
     }
 
     @Override
     public ResponseResult<Object> updateWord(Integer id, WordDto dto) {
         Word word = wordMapper.selectById(id);
-        if(word==null){
+        if (word == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.MISS_ITEM);
         }
-        if(!Objects.equals(dto.getChinese(), "")){
+        if (!Objects.equals(dto.getChinese(), "")) {
             word.setChinese(dto.getChinese());
         }
-        if(!Objects.equals(dto.getEnglish(), "")){
+        if (!Objects.equals(dto.getEnglish(), "")) {
             word.setEnglish(dto.getEnglish());
         }
-        if(!Objects.equals(dto.getProperty(), "")){
+        if (!Objects.equals(dto.getProperty(), "")) {
             word.setProperty(dto.getProperty());
         }
-        if(!Objects.equals(dto.getExample(), "")){
+        if (!Objects.equals(dto.getExample(), "")) {
             word.setExample(dto.getExample());
         }
         wordMapper.updateById(word);
@@ -284,10 +284,9 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         Random random = new Random();
         int randomInt = random.nextInt(101);
         String response = "";
-        if(randomInt % 2 == 0){
+        if (randomInt % 2 == 0) {
             response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getSingleTestPrompt(word)));
-        }
-        else{
+        } else {
             response = LLMGenerator.convertResponse(LLMGenerator.getResponse(PromptGenerator.getCEGuessTest(word)));
         }
         Map<String, Object> dictionary = new HashMap<>();
