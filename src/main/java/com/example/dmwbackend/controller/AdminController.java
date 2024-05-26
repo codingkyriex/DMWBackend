@@ -55,7 +55,7 @@ public class AdminController {
     }
 
     @GetMapping("/getAllUser")
-    public ResponseResult<Object> getUsersByPage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+    public ResponseResult<Object> getUsersByPage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10000") int pageSize){
         return userService.getUsers(pageNum,pageSize);
     }
 
@@ -65,12 +65,12 @@ public class AdminController {
     }
 
     @GetMapping("/getAllArticle")
-    public  ResponseResult<Object> getPagedArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+    public  ResponseResult<Object> getPagedArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10000") int pageSize) {
         return articleService.getPagedArticles(pageNum, pageSize);
     }
 
     @GetMapping("/getPendingArticle")
-    public  ResponseResult<Object> getPedingArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+    public  ResponseResult<Object> getPedingArticles(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10000") int pageSize){
         return articleService.getPendingArticles(pageNum,pageSize);
     }
 
@@ -100,7 +100,7 @@ public class AdminController {
     }
 
     @GetMapping("/getAllWords")
-    public ResponseResult<Object> getAllWords(@RequestParam(name = "word", defaultValue = "") String word,@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+    public ResponseResult<Object> getAllWords(@RequestParam(name = "word", defaultValue = "") String word,@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", defaultValue = "10000") int pageSize){
         return wordService.getAllWords(word,pageNum,pageSize);
     }
 
