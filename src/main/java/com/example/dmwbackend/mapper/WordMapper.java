@@ -35,8 +35,8 @@ public interface WordMapper extends BaseMapper<Word> {
     @Insert("INSERT INTO favorites_word (user_id, word_id, favorite_time) VALUES (#{userId}, #{wordId}, #{date})")
     Integer likeWord(Integer userId, Integer wordId, Date date);
 
-    // 从user_word_progress表中获取所有学习状态为'forget'的单词
-    @Select("SELECT * FROM word WHERE word_id IN (SELECT word_id FROM user_word_progress WHERE user_id = #{userId} AND status = 'forget')")
+    // 从user_word_progress表中获取2个学习状态为'forget'的单词
+    @Select("SELECT word_id FROM user_word_progress WHERE user_id = #{userId} AND status = 'forget' ORDER BY RAND() LIMIT 2")
     List<Integer> getReviewWords(Integer userId);
 
     // 从word表中随机获取一个单词
@@ -50,4 +50,8 @@ public interface WordMapper extends BaseMapper<Word> {
     // 根据bookId查询单词书
     @Select("SELECT * FROM vocabulary WHERE book_id = #{bookId}")
     Vocabulary selectBookById(Integer bookId);
+
+    // 根据userId和wordId修改user_word_progress表中的status,改为"know"
+    @Insert("UPDATE user_word_progress SET status = 'know' WHERE user_id = #{userId} AND word_id = #{wordId}")
+    void changeStatus(Integer userId, Integer wordId);
 }

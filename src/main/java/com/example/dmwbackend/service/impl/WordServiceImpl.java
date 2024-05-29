@@ -141,22 +141,21 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     // 获取该用户要复习的单词列表
     @Override
     public ResponseResult<List<WordVo>> getReviewWords(Integer userId) {
-        // 从user_word_progress表中获取所有学习状态为'forget'的单词
+        // 从user_word_progress表中获取2个学习状态为'forget'的单词
         List<Integer> reviewList = wordMapper.getReviewWords(userId);
         List<WordVo> reviewWords = new ArrayList<>();
         if (reviewList.isEmpty()) {
-            // 从单词表中获取所有单词
-            List<Word> words = wordMapper.selectList(null);
-            // 随机打乱单词列表
-            Collections.shuffle(words);
-            // 选择前10个
-            reviewWords = words.stream()
-                    .limit(10)
-                    .map(word -> getWordVo(word.getWordId()))
-                    .collect(Collectors.toList());
+            // 从单词表中随机获取2个单词
+            for (int i = 0; i < 2; i++) {
+                Word word = wordMapper.getRandomWord();
+                Integer wordId = word.getWordId();
+                reviewList.add(wordId);
+            }
         }
 
         for (Integer wordId : reviewList) {
+            //将该单词的复习状态改为know(已复习)
+            wordMapper.changeStatus(userId, wordId);
             WordVo wordVo = getWordVo(wordId);
             reviewWords.add(wordVo);
         }
