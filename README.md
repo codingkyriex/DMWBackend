@@ -1,0 +1,2 @@
+2021级软件工程课程实践作业-后端部分
+基于springboot+mybatis-plus，主要实现了一个app端的各种功能
